@@ -1,0 +1,46 @@
+{
+  "Dim": 3,
+  "Field": [
+    {
+      "FieldName": "A-phi",
+      "Component": "Ax,Ay,Az,phi",
+      "Solver": "Bicgstab",
+      "Precondtion": "ilu"
+    },
+    {
+      "FieldName": "H",
+      "Component": "Hx,Hy,Hz",
+      "Solver": "LestSq",
+      "Precondtion": "None"
+    },
+    {
+      "FieldName": "Ji",
+      "Component": "Jix,Jiy,Jiz",
+      "Solver": "CalAve",
+      "Precondtion": "None"
+    }
+  ],
+  "RegionMesh": "W4,C8",
+  "BndaryMesh": "T3,Q4",
+  "ElemntType": "Node",
+  "Materail": [
+    {
+      "MateName": "sigma",
+      "MateValu": "5.99e6"
+    },
+    {
+      "MateName": "miu",
+      "MateValu": "L_IntrP_Func"
+    },
+    {
+      "MateName": "R_epsilon",
+      "MateValu": "1,0,0;0,1,0;0,0,1"
+    }
+  ],
+  "TimeList": [
+    {
+      "ListType": "IntrP",
+      "ListValu": "0:0.1:1"
+    }
+  ]
+}

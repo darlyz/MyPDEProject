@@ -17,3 +17,4 @@ int compare_double(const void *a, const void *b) // for qsort(double*, int size,
     else
         return(((*(double*)a-*(double*)b)>0)?1:-1);
 }
+

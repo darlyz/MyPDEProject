@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include"cJSON.h"
 
 typedef struct Coor
 {
@@ -18,7 +19,7 @@ typedef struct Node_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Node_Unknow;
-Node_Unknow *NodF;
+Node_Unknow *NodF=NULL;
 
 typedef struct Edge_Unknow
 {
@@ -27,7 +28,7 @@ typedef struct Edge_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Edge_Unknow;
-Edge_Unknow *EdgF;
+Edge_Unknow *EdgF=NULL;
 
 typedef struct Face_Unknow
 {
@@ -36,7 +37,7 @@ typedef struct Face_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Face_Unknow;
-Face_Unknow *FacF;
+Face_Unknow *FacF=NULL;
 
 typedef struct Volm_Unknow
 {
@@ -45,35 +46,35 @@ typedef struct Volm_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Volm_Unknow;
-Volm_Unknow *VolF;
+Volm_Unknow *VolF=NULL;
 
 typedef struct Node_Mesh
 {
 	int Mesh_Type;
 	int Node_Count,Mesh_Scale,*Mesh_Topo;
 }Node_Mesh;
-Node_Mesh *NodMsh;
+Node_Mesh *NodMsh=NULL;
 
 typedef struct Edge_Mesh
 {
 	int Mesh_Type;
 	int Edge_Count,Mesh_Scale,*Mesh_Topo;
 }Edge_Mesh;
-Edge_Mesh *EdgMsh;
+Edge_Mesh *EdgMsh=NULL;
 
 typedef struct Face_Mesh
 {
 	int Mesh_Type;
 	int Face_Count,Mesh_Scale,*Mesh_Topo;
 }Face_Mesh;
-Face_Mesh *FacMsh;
+Face_Mesh *FacMsh=NULL;
 
 typedef struct Volm_Mesh
 {
 	int Mesh_Type;
 	int Mesh_Scale,*Mesh_Topo;
 }Volm_Mesh;
-Volm_Mesh VolMsh;
+Volm_Mesh *VolMsh=NULL;
 
 typedef struct Materail
 {
@@ -100,6 +101,7 @@ typedef struct Equation_Set
 Equation_Set EqSet0;
 
 int FieldNum;
+int TypesNum;
 int ElemType[10];
 int *dof;         // DOF of Fields
 int *IDNodeNum;   // the total number of Nodes which assigned ID

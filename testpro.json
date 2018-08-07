@@ -20,8 +20,8 @@
       "Precondtion": "None"
     }
   ],
-  "RegionMesh": "W4,C8",
-  "BndaryMesh": "T3,Q4",
+  "RegionMesh": "C8,W4",
+  "BndaryMesh": "Q4,T3",
   "ElemntType": "Node",
   "Materail": [
     {

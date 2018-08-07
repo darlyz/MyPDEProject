@@ -8,25 +8,24 @@ void ReadJson(char *JsonFile)
 {
 	char *JsonData;
 	JsonData = ReadJsonFile(JsonFile,JsonData);
-	
+
 	cJSON *json = cJSON_Parse(JsonData);
-	
+
 	cJSON *RegionMesh = cJSON_GetObjectItem(json,"RegionMesh");
 	cJSON *BndaryMesh = cJSON_GetObjectItem(json,"BndaryMesh");
 	char  *RegMesh    = cJSON_Print(RegionMesh);
 	char  *BndMesh    = cJSON_Print(BndaryMesh);
-	
+
 	int NType = SetElemType(RegMesh, 0);
 	    NType = SetElemType(BndMesh, NType);
-	
+
 	TypesNum = NType;
-	
-	cJSON *ElemtType  = cJSON_GetObjectItem(json,"ElemtType");
+
+	cJSON *ElemtType  = cJSON_GetObjectItem(json,"ElemntType");
 	char  *ElemtT     = cJSON_Print(ElemtType);
-	
+
 	CreatMeshSpace(ElemtT,NType);
-	
-	
+
 	free(JsonData);
 	cJSON_Delete(json);
 	return;
@@ -160,22 +159,22 @@ void CreatMeshSpace(char *ElemtType, int NType)
 			if     (Temp_Type[0]=='N'
 				  &&Temp_Type[1]=='o'
 				  &&Temp_Type[2]=='d'
-				  &&Temp_Type[3]=='e'&&NodMsh!=NULL)
+				  &&Temp_Type[3]=='e'&&NodMsh==NULL)
 						NodMsh = (Node_Mesh*)malloc(sizeof(Node_Mesh)*NType);
 			else if(Temp_Type[0]=='E'
 				  &&Temp_Type[1]=='d'
 				  &&Temp_Type[2]=='g'
-				  &&Temp_Type[3]=='e'&&EdgMsh!=NULL)
+				  &&Temp_Type[3]=='e'&&EdgMsh==NULL)
 						EdgMsh = (Edge_Mesh*)malloc(sizeof(Edge_Mesh)*NType);
 			else if(Temp_Type[0]=='F'
 				  &&Temp_Type[1]=='a'
 				  &&Temp_Type[2]=='c'
-				  &&Temp_Type[3]=='e'&&FacMsh!=NULL)
+				  &&Temp_Type[3]=='e'&&FacMsh==NULL)
 						FacMsh = (Face_Mesh*)malloc(sizeof(Face_Mesh)*NType);
 			else if(Temp_Type[0]=='V'
 				  &&Temp_Type[1]=='o'
 				  &&Temp_Type[2]=='l'
-				  &&Temp_Type[3]=='m'&&VolMsh!=NULL)
+				  &&Temp_Type[3]=='m'&&VolMsh==NULL)
 						VolMsh = (Volm_Mesh*)malloc(sizeof(Volm_Mesh)*NType);
 			else return;
 			

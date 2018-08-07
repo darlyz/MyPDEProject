@@ -2,22 +2,13 @@
 
 void jumprow(int n,FILE *fp);
 
-void ReadNodeMesh(char* pre_file, char* dat_file)
+void ReadNodeMesh(char* dat_file)
 //void main(int argv, char* argc[])
 {
 	char   temp_char;
 	int    temp_int;
 	double temp_double;
 	
-	//---------- need to be determined by pre file
-	Nodmsh0.Mesh_Type = 1;
-	FieldNum    = 1;
-	ElemType[1] = Q4;
-	//ElemType[2] = W4;
-	//ElemType[3] = Q4;
-	//ElemType[4] = T3;
-	//---------
-
 	FILE *ReadData;
 	if((ReadData=fopen(dat_file,"r"))==NULL)
 	//if((ReadData=fopen(argc[2],"r"))==NULL)
@@ -97,82 +88,26 @@ void ReadNodeMesh(char* pre_file, char* dat_file)
 		
 	}
 	}
-
+	
 	// read elem, usually we only care for Field A, so we ignore others
 	int ReadMesh=1;
 	// method 1
 	if(ReadMesh){
-	long long position;
-	position=ftell(ReadData);
 	int NodeSum=0;
-	for (int k=1; k<=Nodmsh0.Mesh_Type; k++)
+	for (int k=1; k<=TypesNum; k++)
 	{
 		jumprow(2,ReadData);
-		fscanf(ReadData,"%d",&(Nodmsh0.Mesh_Scale[k]));
-		fscanf(ReadData,"%d",&(Nodmsh0.Node_Count[k]));
-		jumprow(Nodmsh0.Mesh_Scale[k]+1,ReadData);
-		NodeSum += Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k];
-	}
-
-	int aa = fseek(ReadData, position, SEEK_SET);
-
-	Nodmsh0.Mesh_Topo = (int*)malloc(sizeof(int)*(NodeSum+1));
-	memset    (Nodmsh0.Mesh_Topo, 0, sizeof(int)*(NodeSum+1));
-	
-	NodeSum=0;
-	for (int k=1; k<=Nodmsh0.Mesh_Type; k++)
-	{
-		jumprow(3,ReadData);
-		for (int i=1; i<=Nodmsh0.Mesh_Scale[k]; i++)
+		fscanf(ReadData,"%d",&(NodMsh[k-1].Mesh_Scale));
+		fscanf(ReadData,"%d",&(NodMsh[k-1].Node_Count));
+		NodMsh[k-1].Mesh_Topo = (int*)calloc(sizeof(int),NodMsh[k-1].Mesh_Scale*NodMsh[k-1].Node_Count);
+		for (int i=1; i<=NodMsh[k-1].Mesh_Scale; i++)
 		{
 			fscanf(ReadData,"%d",&temp_int);
-			for (int j=1; j<=Nodmsh0.Node_Count[k]; j++)
-				fscanf(ReadData,"%d",&(Nodmsh0.Mesh_Topo[NodeSum + (i-1)*Nodmsh0.Node_Count[k] + j]));
+			for (int j=1; j<=NodMsh[k-1].Node_Count; j++)
+				fscanf(ReadData,"%d",&(NodMsh[k-1].Mesh_Topo[(i-1)*NodMsh[k-1].Node_Count + j-1]));
 		}
 		jumprow(1,ReadData);
-		NodeSum += Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k];
 	}
-	
-	// method 2
-	/*
-	int NodeSum=0;
-	int **Mesh_Topo;
-	Mesh_Topo = (int**)malloc(sizeof(int*)*Nodmsh0.Mesh_Type);
-	memset     (Mesh_Topo, 0, sizeof(int*)*Nodmsh0.Mesh_Type);
-	for (int k=1; k<=Nodmsh0.Mesh_Type; k++)
-	{
-		jumprow(2,ReadData);
-		fscanf(ReadData,"%d",&(Nodmsh0.Mesh_Scale[k]));
-		fscanf(ReadData,"%d",&(Nodmsh0.Node_Count[k]));
-		Mesh_Topo[k-1] = (int*)malloc(sizeof(int)*Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k]);
-		memset    (Mesh_Topo[k-1], 0, sizeof(int)*Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k]);
-		for (int i=1; i<=Nodmsh0.Mesh_Scale[k]; i++)
-		{
-			fscanf(ReadData,"%d",&temp_int);
-			for (int j=1; j<=Nodmsh0.Node_Count[k]; j++)
-				fscanf(ReadData,"%d",&(Mesh_Topo[k-1][(i-1)*Nodmsh0.Node_Count[k] + j-1]));
-		}
-		jumprow(1,ReadData);
-		NodeSum+=Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k];
-	}
-	
-	Nodmsh0.Mesh_Topo = (int*)malloc(sizeof(int)*(NodeSum+1));
-	
-	NodeSum=0;
-	for (int k=1; k<=Nodmsh0.Mesh_Type; k++)
-	{
-		memcpy(&(Nodmsh0.Mesh_Topo[NodeSum+1]),Mesh_Topo[k-1],sizeof(int)*Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k]);
-		NodeSum+=Nodmsh0.Mesh_Scale[k]*Nodmsh0.Node_Count[k];
-	}
-
-	for (int k=1; k<=Nodmsh0.Mesh_Type; k++)
-	{
-		free(Mesh_Topo[k-1]);
-		Mesh_Topo[k-1]=NULL;
-	}
-	free(Mesh_Topo);
-	Mesh_Topo=NULL;
-	*/
 	}
 	
 	return;

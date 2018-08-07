@@ -19,7 +19,7 @@ typedef struct Node_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Node_Unknow;
-Node_Unknow *NodF=NULL;
+Node_Unknow *NodF;
 
 typedef struct Edge_Unknow
 {
@@ -28,7 +28,7 @@ typedef struct Edge_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Edge_Unknow;
-Edge_Unknow *EdgF=NULL;
+Edge_Unknow *EdgF;
 
 typedef struct Face_Unknow
 {
@@ -37,7 +37,7 @@ typedef struct Face_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Face_Unknow;
-Face_Unknow *FacF=NULL;
+Face_Unknow *FacF;
 
 typedef struct Volm_Unknow
 {
@@ -46,35 +46,35 @@ typedef struct Volm_Unknow
 	double *Status_Value;
 	char **Unknow_Name;
 }Volm_Unknow;
-Volm_Unknow *VolF=NULL;
+Volm_Unknow *VolF;
 
 typedef struct Node_Mesh
 {
 	int Mesh_Type;
 	int Node_Count,Mesh_Scale,*Mesh_Topo;
 }Node_Mesh;
-Node_Mesh *NodMsh=NULL;
+Node_Mesh *NodMsh;
 
 typedef struct Edge_Mesh
 {
 	int Mesh_Type;
 	int Edge_Count,Mesh_Scale,*Mesh_Topo;
 }Edge_Mesh;
-Edge_Mesh *EdgMsh=NULL;
+Edge_Mesh *EdgMsh;
 
 typedef struct Face_Mesh
 {
 	int Mesh_Type;
 	int Face_Count,Mesh_Scale,*Mesh_Topo;
 }Face_Mesh;
-Face_Mesh *FacMsh=NULL;
+Face_Mesh *FacMsh;
 
 typedef struct Volm_Mesh
 {
 	int Mesh_Type;
 	int Mesh_Scale,*Mesh_Topo;
 }Volm_Mesh;
-Volm_Mesh *VolMsh=NULL;
+Volm_Mesh *VolMsh;
 
 typedef struct Materail
 {

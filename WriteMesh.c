@@ -31,7 +31,7 @@ void WriteMesh (char *PostMeshFile)
 			default: break;
 		}		
 		
-		fprintf(fp,"%s %s %s %d %s %s %s %d\n","Mesh",EType,"Dimension",Coor0.Dim,"Elemtype",TypeName,"Nnode",NodMsh[k-1].Node_Count-1);
+		fprintf(fp,"%s %s %s %d %s %s %s %d\n","Mesh",EType,"Dimension",Coor0.Dim,"Elemtype",TypeName,"Nnode",NodMsh[k-1].Elem_CompN-1);
 		
 		if(k==1)
 		{
@@ -53,9 +53,9 @@ void WriteMesh (char *PostMeshFile)
 		for (int i=1; i<=NodMsh[k-1].Mesh_Scale; ++i)
 		{
 			fprintf(fp,"%d",i);
-			for (int j=1; j<=NodMsh[k-1].Node_Count; ++j)
+			for (int j=1; j<=NodMsh[k-1].Elem_CompN; ++j)
 			{
-				fprintf(fp," %d",NodMsh[k-1].Mesh_Topo[(i-1)*NodMsh[k-1].Node_Count+j-1]);
+				fprintf(fp," %d",NodMsh[k-1].Mesh_Topo[(i-1)*NodMsh[k-1].Elem_CompN+j-1]);
 			}
 			fprintf(fp,"\n");
 		}

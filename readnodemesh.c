@@ -98,13 +98,13 @@ void ReadNodeMesh(char* dat_file)
 	{
 		jumprow(2,ReadData);
 		fscanf(ReadData,"%d",&(NodMsh[k-1].Mesh_Scale));
-		fscanf(ReadData,"%d",&(NodMsh[k-1].Node_Count));
-		NodMsh[k-1].Mesh_Topo = (int*)calloc(sizeof(int),NodMsh[k-1].Mesh_Scale*NodMsh[k-1].Node_Count);
+		fscanf(ReadData,"%d",&(NodMsh[k-1].Elem_CompN));
+		NodMsh[k-1].Mesh_Topo = (int*)calloc(sizeof(int),NodMsh[k-1].Mesh_Scale*NodMsh[k-1].Elem_CompN);
 		for (int i=1; i<=NodMsh[k-1].Mesh_Scale; i++)
 		{
 			fscanf(ReadData,"%d",&temp_int);
-			for (int j=1; j<=NodMsh[k-1].Node_Count; j++)
-				fscanf(ReadData,"%d",&(NodMsh[k-1].Mesh_Topo[(i-1)*NodMsh[k-1].Node_Count + j-1]));
+			for (int j=1; j<=NodMsh[k-1].Elem_CompN; j++)
+				fscanf(ReadData,"%d",&(NodMsh[k-1].Mesh_Topo[(i-1)*NodMsh[k-1].Elem_CompN + j-1]));
 		}
 		jumprow(1,ReadData);
 	}

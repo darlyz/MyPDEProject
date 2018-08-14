@@ -14,7 +14,7 @@ int main()
 	
 	FieldNum=2;
 	ReadNodeMesh("test.dat");
-	printf("%d\n",NodMsh[3].Mesh_Topo[(NodMsh[3].Mesh_Scale*NodMsh[3].Node_Count)-2]);
+	printf("%d\n",NodMsh[3].Mesh_Topo[(NodMsh[3].Mesh_Scale*NodMsh[3].Elem_CompN)-2]);
 	
 	//if(NodMsh!=NULL) free(NodMsh);
 	//if(EdgMsh!=NULL) free(EdgMsh);

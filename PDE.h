@@ -51,21 +51,21 @@ Volm_Unknow *VolF;
 typedef struct Node_Mesh
 {
 	int Mesh_Type;
-	int Node_Count,Mesh_Scale,*Mesh_Topo;
+	int Elem_CompN,Mesh_Scale,*Mesh_Topo;
 }Node_Mesh;
 Node_Mesh *NodMsh;
 
 typedef struct Edge_Mesh
 {
 	int Mesh_Type;
-	int Edge_Count,Mesh_Scale,*Mesh_Topo;
+	int Elem_CompN,Mesh_Scale,*Mesh_Topo;
 }Edge_Mesh;
 Edge_Mesh *EdgMsh;
 
 typedef struct Face_Mesh
 {
 	int Mesh_Type;
-	int Face_Count,Mesh_Scale,*Mesh_Topo;
+	int Elem_CompN,Mesh_Scale,*Mesh_Topo;
 }Face_Mesh;
 Face_Mesh *FacMsh;
 

@@ -17,8 +17,6 @@ void ReadNodeMesh(char* dat_file)
     jumprow(2,ReadData);
 
     // read coor
-    int ReadCoor=1;
-    if(ReadCoor){
     fscanf(ReadData,"%d",&Coor0.Total_Nodes);
     fscanf(ReadData,"%d",&Coor0.Dim);
     Coor0.Coor =(double*)malloc(sizeof(double)*Coor0.Total_Nodes*Coor0.Dim);
@@ -29,11 +27,8 @@ void ReadNodeMesh(char* dat_file)
         for (int j=0; j<Coor0.Dim; j++)
             fscanf(ReadData,"%lf",&(Coor0.Coor[i + j*Coor0.Total_Nodes]));
     }
-    }
 
     // read ubf, usually we only care for Field A, but we need to jump the data
-    int ReadBoundaryForce=1;
-    if(ReadBoundaryForce){
     dof = (int*)malloc(sizeof(int)*FieldNum);          // DOF of Fields
     memset    (dof, 0, sizeof(int)*FieldNum);
 
@@ -87,12 +82,8 @@ void ReadNodeMesh(char* dat_file)
             jumprow(3,ReadData);
         
     }
-    }
     
     // read elem, usually we only care for Field A, so we ignore others
-    int ReadMesh=1;
-    // method 1
-    if(ReadMesh){
     int NodeSum=0;
     for (int k=1; k<=TypesNum; k++)
     {
@@ -107,7 +98,6 @@ void ReadNodeMesh(char* dat_file)
                 fscanf(ReadData,"%d",&(NodMsh[k-1].Mesh_Topo[(i-1)*NodMsh[k-1].Elem_CompN + j-1]));
         }
         jumprow(1,ReadData);
-    }
     }
     
     return;

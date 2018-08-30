@@ -10,15 +10,15 @@ void WriteMesh   (char*);
 
 int main (int argc, char* argv[])
 {
-	ReadJson("testpro.json");
-	FieldNum=2;
-	ReadNodeMesh("test.dat");
-	//InitialPDE  (Coor0, NodMsh, NodF, Mate0, TList0, EqSet0);
-	//AssembleMX  (Coor0, NodMsh, NodF, Mate0, TList0, EqSet0);
-	//SolveUnknow (EqSet0);
-	//PackResault (NodF);
-	WriteMesh ("test.post.msh");
-	//WriteResult (Coor0, NodMsh);
-	
-	return 1;
+    ReadJson("testpro.json");
+    FieldNum=2;
+    ReadNodeMesh("test.dat");
+    //InitialPDE  (Coor0, NodMsh, NodF, Mate0, TList0, EqSet0);
+    //AssembleMX  (Coor0, NodMsh, NodF, Mate0, TList0, EqSet0);
+    //SolveUnknow (EqSet0);
+    //PackResault (NodF);
+    WriteMesh ("test.post.msh");
+    //WriteResult (Coor0, NodMsh);
+    
+    return 1;
 }

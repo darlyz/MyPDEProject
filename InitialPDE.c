@@ -40,18 +40,14 @@ Equation_Set EqSet0;
 		int Elem_CompN   = NodMsh[k-1].Elem_CompN;
 		int ElemMtrxSize = NodF[k-1].DoF*Node_Count;
 
-		double **TDerivative0ro = (double**)malloc(sizeof(double*)*NodMsh[k-1].Mesh_Scale);
-		double **TDerivative1st = (double**)malloc(sizeof(double*)*NodMsh[k-1].Mesh_Scale);
-		double **TDerivative2nd = (double**)malloc(sizeof(double*)*NodMsh[k-1].Mesh_Scale);
-		double **RHSData        = (double**)malloc(sizeof(double*)*NodMsh[k-1].Mesh_Scale);
+		double **LHSData = (double**)malloc(sizeof(double*)*NodMsh[k-1].Mesh_Scale);
+		double **RHSData = (double**)malloc(sizeof(double*)*NodMsh[k-1].Mesh_Scale);
 
 		#pragma omp parallel for
 		for(int i=0; i<NodMsh[k-1].Mesh_Scale; i++)
 		{
-			double *TDerivative0ro[i] = (double*)malloc(sizeof(double)*ElemMtrxSize*ElemMtrxSize);
-			double *TDerivative1st[i] = (double*)malloc(sizeof(double)*ElemMtrxSize*ElemMtrxSize);
-			double *TDerivative2nd[i] = (double*)malloc(sizeof(double)*ElemMtrxSize*ElemMtrxSize);
-			double *RHSData[i]        = (double*)malloc(sizeof(double)*ElemMtrxSize);
+			double *LHSData[i] = (double*)malloc(sizeof(double)*ElemMtrxSize*ElemMtrxSize);
+			double *RHSData[i] = (double*)malloc(sizeof(double)*ElemMtrxSize);
 		}
 
 		//int ElemMatix2Globle = (int*)malloc(sizeof(int)*size*size);
@@ -74,40 +70,29 @@ Equation_Set EqSet0;
 			// there need to be calculate couple Data as decouple mode
 			double *CoupData;
 			
-			ElemCalculate(TDerivative0ro[ElemIndex-1], TDerivative1st[ElemIndex-1], 
-			              TDerivative2nd[ElemIndex-1], RHSData[ElemIndex-1], 
+			ElemCalculate(LHSData[ElemIndex-1], RHSData[ElemIndex-1], ElemType[k-1],
 			              ElemIndex, MateIndex, CoupData, ElemNodeCoor);
 
 			free(ElemNodeCoor);
 		}
 		
-		ComposeMatrix(TDerivative0ro, TDerivative1st, TDerivative2nd, RHSData,
+		ComposeMatrix(LHSData, RHSData,
 		              IDNodeSN[0], IDs[0], Ubf[0], Matrix, RHS); // free ElemMatrix as Composing
 		
 		
 		#pragma omp parallel for
 		for(int i=0; i<NodMsh[k-1].Mesh_Scale; i++)
 		{
-			if(TDerivative0ro[i]!=NULL) free(TDerivative0ro[i]);
-			if(TDerivative1st[i]!=NULL) free(TDerivative1st[i]);
-			if(TDerivative2nd[i]!=NULL) free(TDerivative2nd[i]);
+			if(LHSData[i]!=NULL) free(LHSData[i]);
 			if(RHSData[i]!=NULL) free(RHSData[i]);
 		}
-		if(TDerivative0ro!=NULL) free(TDerivative0ro);
-		if(TDerivative1st!=NULL) free(TDerivative1st);
-		if(TDerivative2nd!=NULL) free(TDerivative2nd);
+		if(LHSData!=NULL) free(LHSData);
 		if(RHSData!=NULL) free(RHSData);
 	}
 }
 
-void ComposeMatrix(double **TDerivative0ro, double **TDerivative1st, double **TDerivative2nd, double **RHSData,
+void ComposeMatrix(double **LHSData, double **RHSData,
 		           int *IDNodeSN, int *IDs, double *Ubf, double *Matrix, double *RHS);
 {
 	for(int ElemIndex
-}
-
-void ElemCalculate(double *TDerivative0ro, double *TDerivative1st, double *TDerivative2nd, double *RHSData, 
-			       int ElemIndex, int MateIndex, double *CoupData, double *ElemNodeCoor);
-{
-	
 }

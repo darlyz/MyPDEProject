@@ -5,107 +5,121 @@
 #include <math.h>
 #include"cJSON.h"
 
+typedef enum Mesh_Type {P1=1, L2, L3, T3, T6, Q4, Q8, Q9, W4, W10, C8, C20, C27, H6, H15, H18} Mesh_Type;
+typedef enum Matr_Type {lump=1, dist} Matr_Type;
+
 typedef struct Coor
 {
-	int Dim, Total_Nodes;
-	double *Coor;                                      // *Coor : [x1,x2,x3,...,y1,y2,y3,...,z1,z2,z3,...]
+	int dim, total_nodes;
+	double *coor;                                      // *coor : [x1,x2,x3,...,y1,y2,y3,...,z1,z2,z3,...]
 }Coor;
-Coor Coor0;
+
+typedef struct Gaus_Info
+{
+    int gaus_num, refc_num;
+    double *gaus_coor, *gaus_weig;
+}Gaus_Info;
+
+typedef struct Elem_Info
+{
+    int dim, node_cont, *elem_node;
+	double *node_coor, *coup_valu, *elem_mate **refr_shap;
+}Elem_Info;
 
 typedef struct Node_Unknow
 {
-	int DoF;
-	int *Unknowns_Status;
-	double *Status_Value;
-	char **Unknow_Name;
+	int dof, *unknowns_status;
+	double *status_value;
+	char **unknow_name;
 }Node_Unknow;
-Node_Unknow *NodF;
 
 typedef struct Edge_Unknow
 {
-	int DoF, Total_Edge;
-	int *Unknowns_Status, *Edge_Dirt, *Edge_List;
-	double *Status_Value;
-	char **Unknow_Name;
+	int dof, total_edge, *unknowns_status, *edge_dirt, *edge_list;
+	char **unknow_name;
+	double *status_value;
 }Edge_Unknow;
-Edge_Unknow *EdgF;
 
 typedef struct Face_Unknow
 {
-	int DoF, Total_Face;
-	int *Unknowns_Status, *Face_Norm, *Face_List;
-	double *Status_Value;
-	char **Unknow_Name;
+	int dof, total_face, *unknowns_status, *face_norm, *face_list;
+	char **unknow_name;
+	double *status_value;
 }Face_Unknow;
-Face_Unknow *FacF;
 
 typedef struct Volm_Unknow
 {
-	int DoF, Total_Volm;
-	int *Unknown_Status, *Volm_List;
-	double *Status_Value;
-	char **Unknow_Name;
+	int dof, total_volm, *unknown_status, *volm_list;
+	char **unknow_name;
+	double *status_value;
 }Volm_Unknow;
-Volm_Unknow *VolF;
 
 typedef struct Node_Mesh
 {
-	int Mesh_Type;
-	int Elem_CompN,Mesh_Scale,*Mesh_Topo;
+	Mesh_Type *type;
+	int typeN, *elem_nodeN, *mesh_scale, *mesh_topo;
 }Node_Mesh;
-Node_Mesh *NodMsh;
 
 typedef struct Edge_Mesh
 {
-	int Mesh_Type;
-	int Elem_CompN,Mesh_Scale,*Mesh_Topo;
+	Mesh_Type *type;
+	int typeN, *elem_edgeN, *mesh_scale, *mesh_topo;
 }Edge_Mesh;
-Edge_Mesh *EdgMsh;
 
 typedef struct Face_Mesh
 {
-	int Mesh_Type;
-	int Elem_CompN,Mesh_Scale,*Mesh_Topo;
+	Mesh_Type *type;
+	int typeN, *elem_faceN, *mesh_scale, *mesh_topo;
 }Face_Mesh;
-Face_Mesh *FacMsh;
 
 typedef struct Volm_Mesh
 {
-	int Mesh_Type;
-	int Mesh_Scale,*Mesh_Topo;
+	Mesh_Type *type;
+	int typeN, *mesh_scale, *mesh_topo;
 }Volm_Mesh;
-Volm_Mesh *VolMsh;
 
 typedef struct Materail
 {
-	int Mate_Type;
-	double* Mate;
+	int mate_type, mate_varN;
+	double* mate;
 }Materail;
-Materail Mate0;
 
 typedef struct Time_List
 {
-	int Time_Intervals;
-	double Inti_Time,End_Time,Current_Time;
-	double* Time_Series;
+	int time_intervals;
+	double inti_time, end_time, current_time, *time_series;
 }Time_List;
-Time_List TList0;
 
 typedef struct Equation_Set
 {
-	int Total_Equations,Total_Nontriaval;
-	int *Triaval_Per_Row;
-	int **Column_Index;
-	double **Matrix;
+	int total_equations, total_nontriaval, *triaval_per_row, **column_index;
+	double **matrix;
 }Equation_Set;
-Equation_Set EqSet0;
 
-int FieldNum;
-int TypesNum;
-int ElemType[10];
-int *dof;         // DOF of Fields
-int *IDNodeNum;   // the total number of Nodes which assigned ID
-int **IDNodeSN;   // the Serial Number of Nodes which assigned ID
-int **IDs;        // the ID of DOFs
-double **Ubf;     // the value of IDs	
-enum Mesh_Type{P1=1, L2, L3, T3, T6, Q4, Q8, Q9, W4, W10, C8, C20, C27, H6, H15, H18};
+typedef struct Elem_Matrix
+{
+    double *matr_0, *matr_1, *matr_2, *matr_3;
+    double *left_matr, *righ_vec;
+}Elem_Matr;
+
+coor coor0;
+node_unknow *nodf;
+edge_unknow *edgf;
+face_unknow *facf;
+volm_unknow *volf;
+node_mesh *nodmsh;
+edge_mesh *edgmsh;
+face_mesh *facmsh;
+volm_mesh *volmsh;
+materail mate0;
+time_list tlist0;
+equation_set eqset0;
+
+int fieldnum;
+int typesnum;
+int elemtype[10];
+int *dof;         // dof of fields
+int *idnodenum;   // the total number of nodes which assigned id
+int **idnodesn;   // the serial number of nodes which assigned id
+int **ids;        // the id of dofs
+double **ubf;     // the value of ids	

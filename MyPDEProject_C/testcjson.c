@@ -1,3 +1,10 @@
+/*
+ Copyright: Copyright (c) 2018
+ Created: 2018-4-19
+ Author: Zhang_Licheng
+ Title: complex tensor expression in dummy index summation
+ All rights reserved
+*/
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

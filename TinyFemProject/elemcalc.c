@@ -11,48 +11,42 @@ double inv(double*,double*,int);
 void calc_real_shap(int, int, double*, double*, double*);
 
 void elemcalc (
-    double *node_coor,
-    double *coup_valu,
-    double *elem_mate,
     int elem_n,
-	double **refr_shap,
-    gaus_info gauss,
-	elem_info einfo,
-    elem_matr *ematr
+    Gaus_Info  G_info,
+	Elem_Info  E_info,
+    Elem_Matr *E_matr
 ){
     double x,y,z;
     double rx,ry,rz;
 	double tempvar;
 
-    double u[einfo.node_num];
-    double ux[einfo.node_num];
-	double uy[einfo.node_num];
+    double  u[E_info.node_cont];
+    double ux[E_info.node_cont];
+	double uy[E_info.node_cont];
 
     double eps,rho;
-    eps = elem_mate[0];
-    rho = elem_mate[1];
+    eps = E_info.elem_mate[0];
+    rho = E_info.elem_mate[1];
 
 	double real_coor[3];
 	double refr_coor[3];
 	double jacb_matr[9];
 	double invt_jacb[9];
-	double real_shap[einfo.node_num*(einfo.dim+1)];
+	double real_shap[E_info.node_cont*(E_info.dim+1)];
 
-
-    for (int gaus_i = 1; gaus_i <= gauss.gaus_num; gaus_i ++)
+    for (int gaus_i = 1; gaus_i <= G_info.gaus_num; gaus_i ++)
     {
-        for (int i=1;i<=einfo.dim;i++)
+        for (int i=1;i<=E_info.dim;i++)
 		{
-            refr_coor[i-1] = gauss.gaus_coor[(i-1)*gauss.gaus_num + gaus_i-1];
+            refr_coor[i-1] = G_info.gaus_coor[(i-1)*G_info.gaus_num + gaus_i-1];
 			real_coor[i-1] = 0.;
-			for (int j=1;j<=einfo.dim;j++)
-				jacb_matr[(i-1)*einfo.dim+j-1]=0.;
+			for (int j=1;j<=E_info.dim;j++)
+				jacb_matr[(i-1)*E_info.dim+j-1]=0.;
 		}
 
-        double det = transe_coor(real_coor,refr_coor,einfo.node_coor,jacb_matr,einfo.dim,einfo.node_num);
+        double det = transe_coor(real_coor,refr_coor,E_info.node_coor,jacb_matr,E_info.dim,E_info.node_cont);
 
-        double invt_det = inv(invt_jacb,jacb_matr,einfo.dim);
-
+        double invt_det = inv(invt_jacb,jacb_matr,E_info.dim);
 
         x  = real_coor[0];
         y  = real_coor[1];
@@ -60,101 +54,79 @@ void elemcalc (
         rx = refr_coor[0];
         ry = refr_coor[1];
 
-		double weight = det*gauss.gaus_weig[gaus_i];
-		calc_real_shap(einfo.dim, einfo.node_num, refr_shap[gaus_i-1], real_shap, invt_jacb);
+		double weight = det*G_info.gaus_weig[gaus_i-1];
+		calc_real_shap(E_info.dim, E_info.node_cont, E_info.refr_shap[gaus_i-1], real_shap, invt_jacb);
 
-		memset(u, 0,einfo.node_num*sizeof(double));
-		memset(ux,0,einfo.node_num*sizeof(double));
-		memset(uy,0,einfo.node_num*sizeof(double));
-		for (int i=1; i<=einfo.node_num; ++i)
-            u[i-1]  += +real_shap[(i-1)*(einfo.dim+1)+1-1];
+		for (int i=1; i<=E_info.node_cont; ++i)
+            u[i-1]  = +real_shap[(i-1)*(E_info.dim+1)+1-1];
 
-		for (int i=1; i<=einfo.node_num; ++i)
-            ux[i-1] += +real_shap[(i-1)*(einfo.dim+1)+2-1];
+		for (int i=1; i<=E_info.node_cont; ++i)
+            ux[i-1] = +real_shap[(i-1)*(E_info.dim+1)+2-1];
 
-        for (int i=1; i<=einfo.node_num; ++i)
-            uy[i-1] += +real_shap[(i-1)*(einfo.dim+1)+3-1];
+        for (int i=1; i<=E_info.node_cont; ++i)
+            uy[i-1] = +real_shap[(i-1)*(E_info.dim+1)+3-1];
 
 		// stiffness calculation
-		for (int i=1; i<=einfo.node_num; ++i)
-			for (int j=1; j<=einfo.node_num; ++j)
+		for (int i=1; i<=E_info.node_cont; ++i)
+			for (int j=1; j<=E_info.node_cont; ++j)
 			{
 				tempvar = ux[i-1]*ux[j-1]*eps
 						+ uy[i-1]*uy[j-1]*eps;
-				ematr->matr_0[(i-1)*einfo.node_num + j-1] += tempvar*weight;
+				E_matr->matr_0[(i-1)*E_info.node_cont + j-1] += tempvar*weight;
 			}
 
-		for (int i=1; i<=einfo.node_num; ++i)
-			for (int j=1; j<=einfo.node_num; ++j)
+		for (int i=1; i<=E_info.node_cont; ++i)
+			for (int j=1; j<=E_info.node_cont; ++j)
 			{
 				tempvar = u[i-1]*u[j-1];
-				ematr->matr_0[(i-1)*einfo.node_num + j-1] += tempvar*weight;
+				E_matr->matr_0[(i-1)*E_info.node_cont + j-1] += tempvar*weight;
 			}
 		
 		// loadvector calculation
-		for (int i=1; i<=einfo.node_num; ++i)
+		for (int i=1; i<=E_info.node_cont; ++i)
 		{
 			tempvar = u[i-1]*rho;
-			ematr->righ_vec[i-1] += tempvar*weight;
+			E_matr->righ_vect[i-1] += tempvar*weight;
 		}
-		
     }
 
+	for (int i=0; i<E_info.node_cont*E_info.node_cont; i++)
+	    printf("%e\n",E_matr->matr_0[i]);
+    
+	for (int i=0; i<E_info.node_cont; i++)
+	    printf("%e\n",E_matr->righ_vect[i]);
+
+	printf("\n");
+
 }
 
 
-void set_gaus(gaus_info* g_calc)
+void set_gaus(Gaus_Info* G_info)
 {
-	g_calc->gaus_num = 4;
-	g_calc->refc_num = 2;
-	g_calc->gaus_coor = (double*)malloc(g_calc->gaus_num*g_calc->refc_num*sizeof(double));
-	g_calc->gaus_weig = (double*)malloc(g_calc->gaus_num*sizeof(double));
+	G_info->gaus_num = 4;
+	G_info->refc_num = 2;
+	G_info->gaus_coor = (double*)malloc(G_info->gaus_num*G_info->refc_num*sizeof(double));
+	G_info->gaus_weig = (double*)malloc(G_info->gaus_num*sizeof(double));
 	
-	g_calc->gaus_coor[(1-1)*(4)+1-1] =  5.773502692e-001;
-    g_calc->gaus_coor[(2-1)*(4)+1-1] =  5.773502692e-001;
+	G_info->gaus_coor[(1-1)*(4)+1-1] =  5.773502692e-001;
+    G_info->gaus_coor[(2-1)*(4)+1-1] =  5.773502692e-001;
 	
-    g_calc->gaus_weig[1]=1.000000000e+000;
+    G_info->gaus_weig[1-1]=1.000000000e+000;
 	
-    g_calc->gaus_coor[(1-1)*(4)+2-1] =  5.773502692e-001;
-    g_calc->gaus_coor[(2-1)*(4)+2-1] = -5.773502692e-001;
+    G_info->gaus_coor[(1-1)*(4)+2-1] =  5.773502692e-001;
+    G_info->gaus_coor[(2-1)*(4)+2-1] = -5.773502692e-001;
 	
-    g_calc->gaus_weig[2]=1.000000000e+000;
+    G_info->gaus_weig[2-1]=1.000000000e+000;
 	
-    g_calc->gaus_coor[(1-1)*(4)+3-1] = -5.773502692e-001;
-    g_calc->gaus_coor[(2-1)*(4)+3-1] =  5.773502692e-001;
+    G_info->gaus_coor[(1-1)*(4)+3-1] = -5.773502692e-001;
+    G_info->gaus_coor[(2-1)*(4)+3-1] =  5.773502692e-001;
 	
-    g_calc->gaus_weig[3]=1.000000000e+000;
+    G_info->gaus_weig[3-1]=1.000000000e+000;
 	
-    g_calc->gaus_coor[(1-1)*(4)+4-1] = -5.773502692e-001;
-    g_calc->gaus_coor[(2-1)*(4)+4-1] = -5.773502692e-001;
+    G_info->gaus_coor[(1-1)*(4)+4-1] = -5.773502692e-001;
+    G_info->gaus_coor[(2-1)*(4)+4-1] = -5.773502692e-001;
 	
-    g_calc->gaus_weig[4]=1.000000000e+000;
-}
-
-double set_elem(elem_info* e_info)
-{
-	e_info->node_num = 4;
-	e_info->dim = 2;
-	e_info->node_coor = (double*)malloc(e_info->node_num*e_info->dim*sizeof(double));
-	e_info->refc_coor = (double*)malloc(e_info->node_num*e_info->dim*sizeof(double));
-	
-	e_info->node_coor[(1-1)*(4)+1-1]= 2.;
-    e_info->node_coor[(2-1)*(4)+1-1]= 0.;
-	e_info->node_coor[(1-1)*(4)+2-1]= 2.;
-    e_info->node_coor[(2-1)*(4)+2-1]= 1.;
-	e_info->node_coor[(1-1)*(4)+3-1]= 1.;
-    e_info->node_coor[(2-1)*(4)+3-1]= 1.;
-	e_info->node_coor[(1-1)*(4)+4-1]= 1.;
-    e_info->node_coor[(2-1)*(4)+4-1]= 0.;
-	
-	e_info->refc_coor[(1-1)*(4)+1-1]= 1.;
-    e_info->refc_coor[(2-1)*(4)+1-1]= 1.;
-	e_info->refc_coor[(1-1)*(4)+2-1]=-1.;
-    e_info->refc_coor[(2-1)*(4)+2-1]= 1.;
-	e_info->refc_coor[(1-1)*(4)+3-1]=-1.;
-    e_info->refc_coor[(2-1)*(4)+3-1]=-1.;
-	e_info->refc_coor[(1-1)*(4)+4-1]= 1.;
-    e_info->refc_coor[(2-1)*(4)+4-1]=-1.;	
+    G_info->gaus_weig[4-1]=1.000000000e+000;
 }
 
 double lagrange_shapfunc(double *shap_coor, int node_i) //quadrilateral
@@ -288,31 +260,30 @@ double transe_coor(
 	return jacobi(node_coor,refr_coor,jacb_matr,dim,shap_nodn);
 }
 
-void calc_refr_shap(double* refr_coor, double* refr_shap, elem_info e_info)
+void calc_refr_shap( double* refr_shap, double* refr_coor,int node_cont, int dim)
 {
-	for (int node_i=1; node_i<=e_info.node_num; node_i++)
+	for (int node_i=1; node_i<=node_cont; node_i++)
 	{
-		refr_shap[(node_i-1)*(e_info.dim+1)] = lagrange_shapfunc(refr_coor, node_i);
-		for (int dim_i=1; dim_i<=(e_info.dim+1); dim_i++)
-			refr_shap[(node_i-1)*(e_info.dim+1) + dim_i] = lagrange_deriva_shapfunc(refr_coor,node_i,dim_i);
+		refr_shap[(node_i-1)*(dim+1)] = lagrange_shapfunc(refr_coor, node_i);
+		for (int dim_i=1; dim_i<=(dim+1); dim_i++)
+			refr_shap[(node_i-1)*(dim+1) + dim_i] = lagrange_deriva_shapfunc(refr_coor,node_i,dim_i);
 	}
 }
 
-void set_refr_shap(elem_info e_info, gaus_info g_calc, double** refr_shap)
+void set_refr_shap(double** refr_shap, double* gaus_coor, int gaus_num, int node_cont, int dim)
 {
 	double refr_coor[]={0.0, 0.0, 0.0};
-
-	for (int gaus_i = 1; gaus_i <= g_calc.gaus_num; gaus_i ++)
+	for (int gaus_i = 1; gaus_i <= gaus_num; gaus_i ++)
     {
-		for (int i=1; i<=e_info.dim; i++)
-            refr_coor[i-1] = g_calc.gaus_coor[(i-1)*g_calc.gaus_num + gaus_i-1];
-		calc_refr_shap(refr_coor,refr_shap[gaus_i-1],e_info);
+		for (int i = 1; i <= dim; i ++)
+            refr_coor[i-1] = gaus_coor[(i-1)*gaus_num + gaus_i-1];
+		calc_refr_shap( refr_shap[gaus_i-1], refr_coor, node_cont, dim);
 	}
 }
 
-void calc_real_shap(int dim, int node_num, double* refr_shap, double* real_shap, double* invt_jacb)
+void calc_real_shap(int dim, int node_cont, double* refr_shap, double* real_shap, double* invt_jacb)
 {
-	for (int node_i=1; node_i<=node_num; node_i++)
+	for (int node_i=1; node_i<=node_cont; node_i++)
 	{
 		real_shap[(node_i-1)*(dim+1)] = refr_shap[(node_i-1)*(dim+1)];
 		for (int dim_i=1; dim_i<=dim; dim_i++)

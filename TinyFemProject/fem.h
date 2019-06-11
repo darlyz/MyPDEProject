@@ -7,52 +7,50 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #include <string.h>
 
-struct elem_matr
-{
-    double *matr_0;
-    double *matr_1;
-    double *matr_2;
-    double *matr_3;
-    double *left_matr;
-    double *righ_vec;
-};
-typedef struct elem_matr elem_matr;
+typedef enum Mesh_Type {P1=1, L2, L3, T3, T6, Q4, Q8, Q9, W4, W10, C8, C20, C27, H6, H15, H18} Mesh_Type;
+typedef enum Matr_Type {lump=1, dist} Matr_Type;
 
-struct gaus_info
+typedef struct Elem_Matr
 {
-    int gaus_num;
-    int refc_num;
-    double *gaus_coor;
-    double *gaus_weig;
-};
-typedef struct gaus_info gaus_info;
+    double *matr_0, *matr_1, *matr_2, *matr_3;
+    double *left_matr, *righ_vect;
+}Elem_Matr;
 
-struct elem_info
+typedef struct Gaus_Info
 {
-    int node_num;
-    int dim;
-	double *node_coor;
-	double *refc_coor;
-};
-typedef struct elem_info elem_info;
+    int gaus_num, refc_num;
+    double *gaus_coor, *gaus_weig;
+}Gaus_Info;
 
-struct coor_info
+typedef struct Elem_Info
 {
-    int dim;
-    int node_num;
+    int dim, node_cont, *elem_node;
+	double *node_coor, *coup_valu, *elem_mate, **refr_shap;
+}Elem_Info;
+
+typedef struct Coor_Info
+{
+    int dim, total_nodes;
     double *coordinate;
-};
-typedef struct coor_info coor_info;
+}Coor_Info;
 
-struct Node_Mesh
+typedef struct Node_Mesh
 {
-	int Mesh_TypeN;
-	int *Elem_NodeN;
-    int *Mesh_Scale;
-    int *Mesh_Topo;
-};
-typedef struct Node_Mesh Node_Mesh;
+	Mesh_Type *type;
+	int typeN, *elem_nodeN, *mesh_scale, *mesh_topo;
+}Node_Mesh;
 
-typedef enum matr_type {lump=1, dist} matr_type;
+typedef struct Materail
+{
+	int mate_type, mate_varN;
+	double* mate;
+}Materail;
+
+typedef struct Equation_Set
+{
+	int total_equations, total_nontriaval, *triaval_per_row, **column_index;
+	double **matrix,*vector;
+}Equat_Set;

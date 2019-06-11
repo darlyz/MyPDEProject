@@ -47,16 +47,11 @@ void matrcalc(
         {
             memcpy(E_info.elem_node, &Mesh.mesh_topo[pre_node+(elem_i-1)*elem_nodeN],  elem_nodeN*sizeof(int));
 			memcpy(E_info.elem_mate, &Mate.mate[E_info.elem_node[E_info.node_cont]-1], Mate.mate_varN*sizeof(double));
-			for (int node_i=1; node_i<elem_nodeN; node_i++)
-            {
+			for (int node_i=1; node_i<elem_nodeN; node_i++) {
                 for (int dim_i=1; dim_i<=E_info.dim; dim_i++)
                     E_info.node_coor[(dim_i-1)*(elem_nodeN-1)+node_i-1] = 
                     Coor.coordinate[(E_info.elem_node[node_i-1]-1)*E_info.dim + dim_i-1];
             }
-                //memcpy(&E_info.node_coor[(node_i-1)*E_info.dim],
-				//	   &Coor.coordinate[(E_info.elem_node[node_i-1]-1)*E_info.dim],
-				//	   E_info.dim*sizeof(double));
-
             reset_matr(&E_matr, ematr_size, M_type);
 
 			elemcalc(elem_i, G_info, E_info, &E_matr);
@@ -71,7 +66,7 @@ void matrcalc(
 void set_matr(Elem_Matr* E_matr, int elem_dof, Matr_Type *M_type)
 {
     int size[4];
-    for (int i=0; i<4; i++){
+    for (int i=0; i<4; i++) {
         if     (M_type[i] == lump) size[i] = elem_dof;
         else if(M_type[i] == dist) size[i] = elem_dof*elem_dof;
     }
@@ -90,12 +85,12 @@ void reset_matr(Elem_Matr* E_matr, int elem_dof, Matr_Type *M_type)
         if     (M_type[i] == lump) size[i] = elem_dof;
         else if(M_type[i] == dist) size[i] = elem_dof*elem_dof;
     }
-    memset(E_matr->matr_0    , 0., size[0]          *sizeof(double));
-    memset(E_matr->matr_1    , 0., size[1]          *sizeof(double));
-    memset(E_matr->matr_2    , 0., size[2]          *sizeof(double));
-    memset(E_matr->matr_3    , 0., size[3]          *sizeof(double));
-    memset(E_matr->left_matr , 0., elem_dof*elem_dof*sizeof(double));
-    memset(E_matr->righ_vect , 0., elem_dof         *sizeof(double));
+    memset(E_matr->matr_0    , 0.0, size[0]          *sizeof(double));
+    memset(E_matr->matr_1    , 0.0, size[1]          *sizeof(double));
+    memset(E_matr->matr_2    , 0.0, size[2]          *sizeof(double));
+    memset(E_matr->matr_3    , 0.0, size[3]          *sizeof(double));
+    memset(E_matr->left_matr , 0.0, elem_dof*elem_dof*sizeof(double));
+    memset(E_matr->righ_vect , 0.0, elem_dof         *sizeof(double));
 }
 
     

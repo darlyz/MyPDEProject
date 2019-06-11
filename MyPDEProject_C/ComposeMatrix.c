@@ -30,6 +30,8 @@ void ComposeEquation(
         int mesh_scale = Nmesh.mesh_scale[type_i-1];
         int ematr_size = (elem_nodeN-1) * Nuknw.dof;
 		
+		Matr_Type M_type[4]={dist,lump,lump,lump};
+		
 		Gaus_Info Gauss;
 		Elem_Info Einfo;
 		Elem_Matr Ematr;

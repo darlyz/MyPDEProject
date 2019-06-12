@@ -54,3 +54,11 @@ typedef struct Equation_Set
 	int total_equations, total_nontriaval, *triaval_per_row, **column_index;
 	double **matrix,*vector;
 }Equat_Set;
+
+typedef struct Dirichlet
+{
+    int  dirichlet_nodn;
+    int *dirichlet_nods;
+    int    *dof_tag;
+    double *dof_val;
+}Dirichlet;

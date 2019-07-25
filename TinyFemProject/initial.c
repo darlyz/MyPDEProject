@@ -1,5 +1,8 @@
 #include "fem.h"
+#include "metis.h"
 #define list_size 1000000
+
+void nontrival_graph();
 
 void initial(
     Coor_Info Coor,
@@ -10,7 +13,7 @@ void initial(
     
 ){
     int initial_tag; memset(&initial_tag, 127, sizeof(int));
-    int dirichlet_tag = -1
+    int dirichlet_tag = -1;
     int empty_dof_tag =  0;
     int empty_elm_tag =  0;
 
@@ -65,11 +68,13 @@ void initial(
                         id_set[eq_count++] = eq_id[(elem_node[node_i-1]-1)*node_dof + dof_i-1];
                 }
 
-            if (eq_count > 0)
-                nontrival_graph(); // need to design
+            //if (eq_count > 0)
+               // nontrival_graph(); // need to design
         }
         pre_nods += elem_nodeN*mesh_scale;
 
     }
 
+
+    printf("initial done!\n");
 }

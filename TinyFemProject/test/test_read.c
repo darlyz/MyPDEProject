@@ -11,6 +11,7 @@ void show_coor (Coor_Info);
 void show_ID   (Dof_Tag  );
 void show_value(Dof_Tag  );
 void show_init (Init_Data);
+void show_mesh (Node_Mesh);
 
 int main (int argc, char* argv[])
 {
@@ -38,7 +39,7 @@ int main (int argc, char* argv[])
             show_init(Init);
         }
         else if (strncmp(argv[2],"-mesh" ,5) == 0) {
-
+            show_mesh(Mesh);
         }
     }
 
@@ -86,6 +87,18 @@ void show_init(Init_Data Init)
                 if (k==2)
                     printf("%lg ",Init.init_2[i*Init.dof_num + j]);
             }
+            printf("\n");
+        }
+    }
+}
+
+void show_mesh(Node_Mesh Mesh)
+{
+    for (int k=0; k<Mesh.typeN; k++) {
+        printf("Mesh Type %d: %d\n", k, Mesh.type[k]);
+        for (int i=0; i<Mesh.mesh_scale[k]; i++) {
+            for (int j=0; j<Mesh.elem_nodeN[k]; j++) 
+                printf("%d ",Mesh.mesh_topo[k][i*Mesh.elem_nodeN[k]+j]);
             printf("\n");
         }
     }

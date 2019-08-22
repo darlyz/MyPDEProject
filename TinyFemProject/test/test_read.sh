@@ -5,4 +5,4 @@ then
 rm -f testr.out
 fi
 gcc -I../ test_read.c ../ReadMesh.c -o testr.out
-./testr.out ../mesh/exam.gid/exam.dat -init
+./testr.out ../mesh/exam.gid/exam.dat -mesh

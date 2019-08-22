@@ -28,6 +28,11 @@ void readmesh(
     int line_count;
 
     Init->init_oder = -1;
+    Mesh->typeN     =  0;
+    Mesh->type = (Mesh_Type* )malloc(sizeof(Mesh_Type )*16);
+    Mesh->elem_nodeN = (int* )malloc(sizeof(int )*16);
+    Mesh->mesh_scale = (int* )malloc(sizeof(int )*16);
+    Mesh->mesh_topo  = (int**)malloc(sizeof(int*)*16);
 
     while(fgets(temp_str, 255, ReadData) != NULL) {
 
@@ -61,6 +66,7 @@ void readmesh(
         else if (strncmp(temp_str,"-mesh-" ,3) == 0) {
             dataparagh = mesh;
             line_count = 0;
+            Mesh->typeN ++ ;
             continue;
         }
 
@@ -220,6 +226,93 @@ void readmesh(
                         word_begin = i;
                     }
                 }
+            }
+        }
+
+        else if (dataparagh == mesh) {
+
+            if (line_count == 1) {
+
+                if (strncmp(temp_str, "l2", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = L2;
+
+                else if (strncmp(temp_str, "l3", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = L3;
+
+                else if (strncmp(temp_str, "t3", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = T3;
+
+                else if (strncmp(temp_str, "t6", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = T6;
+
+                else if (strncmp(temp_str, "q4", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = Q4;
+
+                else if (strncmp(temp_str, "q8", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = Q8;
+
+                else if (strncmp(temp_str, "q9", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = Q9;
+
+                else if (strncmp(temp_str, "w4", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = W4;
+
+                else if (strncmp(temp_str, "w10", 3) == 0)
+                    Mesh->type[Mesh->typeN-1] = W10;
+
+                else if (strncmp(temp_str, "c8", 2) == 0)
+                    Mesh->type[Mesh->typeN-1] = C8;
+
+                else if (strncmp(temp_str, "c20", 3) == 0)
+                    Mesh->type[Mesh->typeN-1] = C20;
+
+                else if (strncmp(temp_str, "c27", 3) == 0)
+                    Mesh->type[Mesh->typeN-1] = C27;
+
+                else if (strncmp(temp_str, "h6", 3) == 0)
+                    Mesh->type[Mesh->typeN-1] = H6;
+
+                else if (strncmp(temp_str, "h15", 3) == 0)
+                    Mesh->type[Mesh->typeN-1] = H15;
+
+                else if (strncmp(temp_str, "h18", 3) == 0)
+                    Mesh->type[Mesh->typeN-1] = H18;
+            }
+
+            else if (line_count == 2) {
+
+                sscanf(temp_str, "%d %d", &Mesh->mesh_scale[Mesh->typeN-1],
+                                          &Mesh->elem_nodeN[Mesh->typeN-1]);
+
+                Mesh->mesh_topo[Mesh->typeN-1]  = (int*)malloc(sizeof(int)*
+                                           Mesh->mesh_scale[Mesh->typeN-1]*
+                                           Mesh->elem_nodeN[Mesh->typeN-1]);
+            }
+
+            else if (line_count < Mesh->mesh_scale[Mesh->typeN-1] + 3) {
+
+                int  word_count = 0;
+                int  word_begin = 0;
+                bool word_find  = true;
+
+                for (int i=0; temp_str[i] != '\0'; i++) {
+
+                    if ( isspace(temp_str[i]) && word_find ) {
+
+                        word_find = false;
+                        temp_str[i] = '\0';
+
+                        sscanf(temp_str + word_begin, "%d", &Mesh->mesh_topo[Mesh->typeN-1][(line_count-3)*Mesh->elem_nodeN[Mesh->typeN-1] + word_count]);
+
+                        word_count ++;
+                    }
+
+                    else if ( !isspace(temp_str[i]) && !word_find ) {
+                        word_find  = true;
+                        word_begin = i;
+                    }
+                }
+
             }
         }
     }

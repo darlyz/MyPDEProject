@@ -45,18 +45,21 @@ void matrcalc(
 
         for (int elem_i=1; elem_i<=mesh_scale; elem_i++)
         {
-            memcpy(E_info.elem_node, &Mesh.mesh_topo[pre_node+(elem_i-1)*elem_nodeN],  elem_nodeN*sizeof(int));
+
+            memcpy(E_info.elem_node, &Mesh.mesh_topo[type_i-1][(elem_i-1)*elem_nodeN], elem_nodeN*sizeof(int));
 			memcpy(E_info.elem_mate, &Mate.mate[E_info.elem_node[E_info.node_cont]-1], Mate.mate_varN*sizeof(double));
+            
 			for (int node_i=1; node_i<elem_nodeN; node_i++) {
                 for (int dim_i=1; dim_i<=E_info.dim; dim_i++)
+
                     E_info.node_coor[(dim_i-1)*(elem_nodeN-1)+node_i-1] = 
                     Coor.coordinate[(E_info.elem_node[node_i-1]-1)*E_info.dim + dim_i-1];
             }
+            
             reset_matr(&E_matr, ematr_size, M_type);
 
 			elemcalc(elem_i, G_info, E_info, &E_matr);
         }
-        pre_node += elem_nodeN * mesh_scale;
 
         clear_matr(&E_matr);
         clear_elem(&E_info, G_info.gaus_num);

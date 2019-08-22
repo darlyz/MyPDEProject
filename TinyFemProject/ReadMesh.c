@@ -29,7 +29,7 @@ void readmesh(
 
     Init->init_oder = -1;
     Mesh->typeN     =  0;
-    Mesh->type = (Mesh_Type* )malloc(sizeof(Mesh_Type )*16);
+    Mesh->type = (Mesh_Type* )malloc(sizeof(Mesh_Type)*16);
     Mesh->elem_nodeN = (int* )malloc(sizeof(int )*16);
     Mesh->mesh_scale = (int* )malloc(sizeof(int )*16);
     Mesh->mesh_topo  = (int**)malloc(sizeof(int*)*16);
@@ -312,7 +312,6 @@ void readmesh(
                         word_begin = i;
                     }
                 }
-
             }
         }
     }

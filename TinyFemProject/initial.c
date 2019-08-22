@@ -2,6 +2,8 @@
 
 #define init_adj_num 20
 
+void insert_node(int, int, int*, int**);
+
 void initial(
     Coor_Info Coor,
     Node_Mesh Mesh,
@@ -29,9 +31,11 @@ void initial(
 
             memcpy(node, &Mesh.mesh_topo[type_i][elem_i*Mesh.elem_nodeN[type_i]], nodeN*sizeof(int));
 
-            for (int node_i; node_i<nodeN; node_i++) {
+            for (int node_i=0; node_i<nodeN; node_i++) {
 
-                int nodeSN = node[node_i];
+                int node_SN = node[node_i];
+
+                printf("%d aaaa,  %d, ",elem_i+1, node_SN);
 
                 for (int node_j=0; node_j<nodeN; node_j++) {
 
@@ -40,12 +44,25 @@ void initial(
 
                     int insert_SN = node[node_j];
 
-                    insert_node(nodeSN, insert_SN, adj_nodn, adj_topo);
+                    printf("%d ", insert_SN);
+
+                    insert_node(node_SN, insert_SN, adj_nodn, adj_topo);
                 }
+
+                printf("\n");
             }
+
+            printf("\n");
         }
 
         free(node);
+    }
+
+    for (int i=0; i<Coor.total_nodes; i++) {
+        printf("%d, ",i+1);
+        for (int j=0; j<adj_nodn[i]; j++)
+            printf("%d ",adj_topo[i][j]);
+        printf("\n");
     }
 
 
@@ -86,46 +103,62 @@ int Binary_Search(int* dest, int dest_len, int key)
     }
 }
 
-void insert_node(int nodeSN, int insert_SN, int* adj_nodn, int** adj_topo)
+int search(int* dest, int dest_len, int key)
 {
-    if (adj_nodn[nodeSN] == 0) {
+    for (int i=0; i<dest_len; i++) {
+        if ( dest[0] > key )
+            return 0;
 
-        adj_topo[nodeSN][0] = insert_SN;
-        adj_nodn[nodeSN] ++;
+        else if ( dest[dest_len-1] < key )
+            return dest_len;
+
+        else if ( dest[i] < key && dest[i+1] > key)
+            return i+1;
+    }
+
+    return -1;
+}
+
+void insert_node(int node_SN, int insert_SN, int* adj_nodn, int** adj_topo)
+{
+    if (adj_nodn[node_SN] == 0) {
+
+        adj_topo[node_SN][0] = insert_SN;
+        adj_nodn[node_SN] ++;
     }
 
     else {
 
-        int insert_idx = Binary_Search(adj_topo[nodeSN], adj_nodn[nodeSN], insert_SN);
+        int insert_idx = Binary_Search(adj_topo[node_SN], adj_nodn[node_SN], insert_SN);
 
-        if (insert_SN != -1) {
+        if (insert_idx != -1) {
 
-            if (adj_nodn[nodeSN] % init_adj_num == 0) {
+            if (adj_nodn[node_SN] % init_adj_num == 0) {
 
                 int *temp_topo;
-                temp_topo = (int*)calloc( (adj_nodn[nodeSN]/init_adj_num + 1)*init_adj_num*sizeof(int) );
+                temp_topo = (int*)calloc( (adj_nodn[node_SN]/init_adj_num + 1)*init_adj_num, sizeof(int) );
                 
-                memcpy(temp_topo, adj_topo[nodeSN], insert_idx*sizeof(int));
+                memcpy(temp_topo, adj_topo[node_SN], insert_idx*sizeof(int));
                 temp_topo[insert_idx] = insert_SN;
                 memcpy(temp_topo + insert_SN + 1,
-                       adj_topo[nodeSN] + insert_SN,
-                      (adj_nodn[nodeSN] - insert_idx)*sizeof(int) );
+                       adj_topo[node_SN] + insert_SN,
+                      (adj_nodn[node_SN] - insert_idx)*sizeof(int) );
                 
-                free(adj_topo[nodeSN]);
-                adj_topo[nodeSN] = temp_topo;
+                free(adj_topo[node_SN]);
+                adj_topo[node_SN] = temp_topo;
                 temp_topo = NULL;
 
             }
 
             else {
 
-                for (int i=adj_nodn[nodeSN]; i>insert_idx; i--)
-                    adj_topo[nodeSN][i] = adj_topo[nodeSN][i-1];
+                for (int i=adj_nodn[node_SN]; i>insert_idx; i--)
+                    adj_topo[node_SN][i] = adj_topo[node_SN][i-1];
 
-                adj_topo[nodeSN][insert_idx] = insert_SN;
+                adj_topo[node_SN][insert_idx] = insert_SN;
             }
 
-            adj_nodn[nodeSN] ++;
+            adj_nodn[node_SN] ++;
         }
     }
 }

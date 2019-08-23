@@ -39,17 +39,21 @@ int main (int argc, char* argv[])
     dof_tag[7] = -1;    bnd_constr[7] = 1;
 	
 	Mesh.typeN = 1;
-	Mesh.elem_nodeN = (int*) malloc (Mesh.typeN*sizeof(int));
-	Mesh.mesh_scale = (int*) malloc (Mesh.typeN*sizeof(int));
+
+	Mesh.type = (Mesh_Type* )malloc(sizeof(Mesh_Type)*16);
+    Mesh.elem_nodeN = (int* )malloc(sizeof(int )*16);
+    Mesh.mesh_scale = (int* )malloc(sizeof(int )*16);
+    Mesh.mesh_topo  = (int**)malloc(sizeof(int*)*16);
+
 	Mesh.elem_nodeN[0] = 5;
 	Mesh.mesh_scale[0] = 3;
 	int total = 0;
 	for (int i=0; i<Mesh.typeN; i++)
 		total += Mesh.elem_nodeN[i] * Mesh.mesh_scale[i];
-	Mesh.mesh_topo = (int*) malloc (total*sizeof(int));
-	Mesh.mesh_topo[ 0] = 4;    Mesh.mesh_topo[ 1] = 2;    Mesh.mesh_topo[ 2] = 1;    Mesh.mesh_topo[ 3] = 3;    Mesh.mesh_topo[ 4] = 1; 
-    Mesh.mesh_topo[ 5] = 6;    Mesh.mesh_topo[ 6] = 5;    Mesh.mesh_topo[ 7] = 2;    Mesh.mesh_topo[ 8] = 4;    Mesh.mesh_topo[ 9] = 1; 
-    Mesh.mesh_topo[10] = 8;    Mesh.mesh_topo[11] = 7;    Mesh.mesh_topo[12] = 5;    Mesh.mesh_topo[13] = 6;    Mesh.mesh_topo[14] = 1; 
+	Mesh.mesh_topo[0] = (int*) malloc (total*sizeof(int));
+	Mesh.mesh_topo[0][ 0] = 4;    Mesh.mesh_topo[0][ 1] = 2;    Mesh.mesh_topo[0][ 2] = 1;    Mesh.mesh_topo[0][ 3] = 3;    Mesh.mesh_topo[0][ 4] = 1; 
+    Mesh.mesh_topo[0][ 5] = 6;    Mesh.mesh_topo[0][ 6] = 5;    Mesh.mesh_topo[0][ 7] = 2;    Mesh.mesh_topo[0][ 8] = 4;    Mesh.mesh_topo[0][ 9] = 1; 
+    Mesh.mesh_topo[0][10] = 8;    Mesh.mesh_topo[0][11] = 7;    Mesh.mesh_topo[0][12] = 5;    Mesh.mesh_topo[0][13] = 6;    Mesh.mesh_topo[0][14] = 1; 
 	
 	Mate.mate_varN = 2;
 	Mate.mate_type = 1;

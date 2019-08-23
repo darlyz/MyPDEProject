@@ -3,6 +3,7 @@
 #define init_adj_num 20
 
 void insert_node(int, int, int*, int**);
+void show_adj(int*, int**, int);
 
 void initial(
     Coor_Info Coor,
@@ -13,6 +14,10 @@ void initial(
     
 ){
 
+    int   nodeN;
+    int  *node;
+    int  *node_SN;
+    int  *insert_SN;
     int  *adj_nodn;
     int **adj_topo;
 
@@ -23,48 +28,32 @@ void initial(
 
     for (int type_i=0; type_i<Mesh.typeN; type_i++) {
 
-        int *node;
-        int nodeN = Mesh.elem_nodeN[type_i] -1;
-        node = (int*)malloc(nodeN*sizeof(int));
+        nodeN = Mesh.elem_nodeN[type_i] -1;
+        //node = (int*)malloc(nodeN*sizeof(int));
 
         for (int elem_i=0; elem_i<Mesh.mesh_scale[type_i]; elem_i++) {
 
-            memcpy(node, &Mesh.mesh_topo[type_i][elem_i*Mesh.elem_nodeN[type_i]], nodeN*sizeof(int));
+            //memcpy(node, &Mesh.mesh_topo[type_i][elem_i*Mesh.elem_nodeN[type_i]], nodeN*sizeof(int));
+            node = &Mesh.mesh_topo[type_i][elem_i*Mesh.elem_nodeN[type_i]];
 
             for (int node_i=0; node_i<nodeN; node_i++) {
 
-                int node_SN = node[node_i];
-
-                printf("%d aaaa,  %d, ",elem_i+1, node_SN);
+                node_SN = &node[node_i];
 
                 for (int node_j=0; node_j<nodeN; node_j++) {
 
                     if (node_i == node_j)
                         continue;
 
-                    int insert_SN = node[node_j];
+                    insert_SN = &node[node_j];
 
-                    printf("%d ", insert_SN);
-
-                    insert_node(node_SN, insert_SN, adj_nodn, adj_topo);
+                    insert_node(*node_SN, *insert_SN, adj_nodn, adj_topo);
                 }
-
-                printf("\n");
             }
-
-            printf("\n");
         }
-
-        free(node);
     }
 
-    for (int i=0; i<Coor.total_nodes; i++) {
-        printf("%d, ",i+1);
-        for (int j=0; j<adj_nodn[i]; j++)
-            printf("%d ",adj_topo[i][j]);
-        printf("\n");
-    }
-
+    show_adj(adj_nodn, adj_topo, Coor.total_nodes);
 
     printf("initial done!\n");
 }
@@ -121,6 +110,8 @@ int search(int* dest, int dest_len, int key)
 
 void insert_node(int node_SN, int insert_SN, int* adj_nodn, int** adj_topo)
 {
+    node_SN --;
+
     if (adj_nodn[node_SN] == 0) {
 
         adj_topo[node_SN][0] = insert_SN;
@@ -171,4 +162,14 @@ int compare_int(const void *value1, const void *value2)
 void int_qsort(int* array, int array_len)
 {
     qsort(array, array_len, sizeof(int), compare_int);
+}
+
+void show_adj(int* adj_nodn, int** adj_topo, int total_nodes)
+{
+    for (int i=0; i<total_nodes; i++) {
+        printf("%d, ",i+1);
+        for (int j=0; j<adj_nodn[i]; j++)
+            printf("%d ",adj_topo[i][j]);
+        printf("\n");
+    }
 }

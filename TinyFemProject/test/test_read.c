@@ -6,7 +6,7 @@
 */
 #include "fem.h"
 
-void readmesh(char*, Coor_Info*, Node_Mesh*, Init_Data*, Dof_Tag*);
+void readmesh(Coor_Info*, Node_Mesh*, Dof_Tag*, Init_Data*, char*);
 void show_coor (Coor_Info);
 void show_ID   (Dof_Tag  );
 void show_value(Dof_Tag  );
@@ -24,7 +24,7 @@ int main (int argc, char* argv[])
 	int node_dof = 1;
 
     if (argc > 1) {
-        readmesh(argv[1], &Coor, &Mesh, &Init, &ID);
+        readmesh(&Coor, &Mesh, &ID, &Init, argv[1]);
     }
 
     if (argc == 3) {

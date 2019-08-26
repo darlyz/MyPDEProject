@@ -6,12 +6,13 @@
 */
 #include "fem.h"
 
-void matrcalc(Coor_Info, Node_Mesh, Materail, Equat_Set, int, int*, double*);
+void matrcalc(Coor_Info, Node_Mesh, Dof_Tag, Equat_Set*, Materail, int);
 
 int main (int argc, char* argv[])
 {
 	Coor_Info Coor;
 	Node_Mesh Mesh;
+	Dof_Tag   ID;
 	Materail  Mate;
 	Equat_Set Equa;
 	int node_dof = 1;
@@ -30,13 +31,13 @@ int main (int argc, char* argv[])
     Coor.coordinate[12] = 3.000000e+00;    Coor.coordinate[13] = 1.000000e+00; 
     Coor.coordinate[14] = 3.000000e+00;    Coor.coordinate[15] = 0.000000e+00;
 	
-	dof_tag    = (int*)    malloc (Coor.total_nodes*node_dof*sizeof(int));
-	bnd_constr = (double*) calloc (Coor.total_nodes*node_dof,sizeof(double));
-	for (int i=0; i<Coor.total_nodes*node_dof; i++) dof_tag[i] = 1;
-	dof_tag[0] = -1;    bnd_constr[0] = 0.0;
-    dof_tag[2] = -1;    bnd_constr[2] = 0.0;
-    dof_tag[6] = -1;    bnd_constr[6] = 1;
-    dof_tag[7] = -1;    bnd_constr[7] = 1;
+	//dof_tag    = (int*)    malloc (Coor.total_nodes*node_dof*sizeof(int));
+	//bnd_constr = (double*) calloc (Coor.total_nodes*node_dof,sizeof(double));
+	//for (int i=0; i<Coor.total_nodes*node_dof; i++) dof_tag[i] = 1;
+	//dof_tag[0] = -1;    bnd_constr[0] = 0.0;
+    //dof_tag[2] = -1;    bnd_constr[2] = 0.0;
+    //dof_tag[6] = -1;    bnd_constr[6] = 1;
+    //dof_tag[7] = -1;    bnd_constr[7] = 1;
 	
 	Mesh.typeN = 1;
 
@@ -69,7 +70,7 @@ int main (int argc, char* argv[])
 	
 	printf("begin!\n");
 
-	matrcalc(Coor, Mesh, Mate, Equa, node_dof, dof_tag, bnd_constr);
+	matrcalc(Coor, Mesh, ID, &Equa, Mate, node_dof);
 	
 	//for (int i=0; i<Equa.total_equations; i++)
 	//{

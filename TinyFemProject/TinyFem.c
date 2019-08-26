@@ -1,5 +1,9 @@
 #include "fem.h"
 
+void readmesh(Coor_Info*, Node_Mesh*, Dof_Tag*, Init_Data*, char*);
+void initial (Coor_Info,  Node_Mesh,  Dof_Tag,  Equat_Set*, int);
+void matrcalc(Coor_Info,  Node_Mesh,  Dof_Tag,  Equat_Set*, Materail, int);
+
 int main(int argc, char* argv[])
 {
 
@@ -8,10 +12,11 @@ int main(int argc, char* argv[])
     Node_Mesh Mesh;
     Init_Data Init;
     Equat_Set Equa;
+    Materail  Mate;
     Dof_Tag   ID;
     int node_dof = 1;
 
-    readmesh(data_file, &Coor, &Mesh, &Init, &ID);
-    initial(Coor, Mesh, Equa, ID, node_dof);
-
+    readmesh(&Coor, &Mesh, &ID, &Init, data_file);
+    initial ( Coor,  Mesh,  ID, &Equa, node_dof);
+    matrcalc( Coor,  Mesh,  ID, &Equa, Mate, node_dof);
 }

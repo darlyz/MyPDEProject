@@ -8,11 +8,11 @@
 #include "fem.h"
 
 void readmesh(
-    char* dat_file,
     Coor_Info *Coor,
     Node_Mesh *Mesh,
+    Dof_Tag   *ID,
     Init_Data *Init,
-    Dof_Tag   *ID
+    char      *dat_file
 ){
     char   temp_char;
     char   temp_str[255];

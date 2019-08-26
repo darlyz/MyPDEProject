@@ -7,7 +7,7 @@ void initial();
 
 int main (int argc, char* argv[])
 {
-    char data_file[]="../mesh/exam.gid/exam.dat";
+    char data_file[]="../mesh/exam2.gid/exam2.dat";
     Coor_Info Coor;
     Node_Mesh Mesh;
     Init_Data Init;
@@ -15,7 +15,7 @@ int main (int argc, char* argv[])
     Dof_Tag   ID;
     int node_dof = 1;
 
-    readmesh(data_file, &Coor, &Mesh, &Init, &ID);
+    readmesh(&Coor, &Mesh, &ID, &Init, data_file);
 
     //print_mesh(Mesh);
     //print_coor(Coor);
@@ -24,7 +24,7 @@ int main (int argc, char* argv[])
     double  duration;
 
     start  = clock();
-    initial(Coor, Mesh, Equa, ID, node_dof);
+    initial(Coor, Mesh, ID, &Equa, node_dof);
     finish = clock();
     
     duration = (double)(finish - start) / CLOCKS_PER_SEC;

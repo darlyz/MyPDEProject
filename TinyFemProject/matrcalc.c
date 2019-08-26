@@ -6,11 +6,11 @@
 */
 #include "fem.h"
 
-void set_gaus(Gaus_Info*);
-void set_matr(Elem_Matr*, int, Matr_Type*);
-void set_elem(Elem_Info*, int, int, int, int);
+void set_gaus  (Gaus_Info*);
+void set_matr  (Elem_Matr*, int, Matr_Type*);
+void set_elem  (Elem_Info*, int, int, int, int);
 void reset_matr(Elem_Matr*, int, Matr_Type*);
-void show_elem(Elem_Info, int, int, int, int);
+void show_elem (Elem_Info,  int, int, int, int);
 void clear_matr(Elem_Matr*);
 void clear_elem(Elem_Info*, int);
 void set_refr_shap(double**, double*, int, int, int);
@@ -19,11 +19,10 @@ void elemcalc(int, Gaus_Info, Elem_Info, Elem_Matr*);
 void matrcalc(
     Coor_Info  Coor,
     Node_Mesh  Mesh,
-	Materail   Mate,
-	Equat_Set  Equa,
-    int node_dof,
-    int *dof_tag,
-    double *bnd_constr
+	Dof_Tag    ID,
+	Equat_Set* Equa,
+    Materail   Mate,
+    int node_dof
 ){
     int pre_node = 0;
     for (int type_i=1; type_i<=Mesh.typeN; type_i++)

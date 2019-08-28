@@ -87,12 +87,12 @@ void reset_matr(Elem_Matr* E_matr, int elem_dof, Matr_Type *M_type)
         if     (M_type[i] == lump) size[i] = elem_dof;
         else if(M_type[i] == dist) size[i] = elem_dof*elem_dof;
     }
-    memset(E_matr->matr_0    , 0.0, size[0]          *sizeof(double));
-    memset(E_matr->matr_1    , 0.0, size[1]          *sizeof(double));
-    memset(E_matr->matr_2    , 0.0, size[2]          *sizeof(double));
-    memset(E_matr->matr_3    , 0.0, size[3]          *sizeof(double));
-    memset(E_matr->left_matr , 0.0, elem_dof*elem_dof*sizeof(double));
-    memset(E_matr->righ_vect , 0.0, elem_dof         *sizeof(double));
+    memset(E_matr->matr_0    , 0, size[0]          *sizeof(double));
+    memset(E_matr->matr_1    , 0, size[1]          *sizeof(double));
+    memset(E_matr->matr_2    , 0, size[2]          *sizeof(double));
+    memset(E_matr->matr_3    , 0, size[3]          *sizeof(double));
+    memset(E_matr->left_matr , 0, elem_dof*elem_dof*sizeof(double));
+    memset(E_matr->righ_vect , 0, elem_dof         *sizeof(double));
 }
 
     

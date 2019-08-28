@@ -179,7 +179,7 @@ int Binary_Search(int* dest, int dest_len, int key) {
     {
         idx_mid = (idx_start + idx_end)/2;
 
-        if      (key < dest[idx_mid])
+        if (key < dest[idx_mid])
             idx_end   = idx_mid - 1;
 
         else if (key > dest[idx_mid])
@@ -194,7 +194,7 @@ int Binary_Search(int* dest, int dest_len, int key) {
         		return idx_mid;
 
         	else if (idx_mid == idx_end)
-        		return idx_mid+1;
+        		return idx_mid + 1;
         }
     }
 }

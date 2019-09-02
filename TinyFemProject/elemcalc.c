@@ -44,9 +44,9 @@ void elemcalc (
 				jacb_matr[(i-1)*E_info.dim+j-1]=0.;
 		}
 
-        double det = transe_coor(real_coor,refr_coor,E_info.node_coor,jacb_matr,E_info.dim,E_info.node_cont);
+        double det = transe_coor(real_coor, refr_coor, E_info.node_coor, jacb_matr, E_info.dim, E_info.node_cont);
 
-        double invt_det = inv(invt_jacb,jacb_matr,E_info.dim);
+        double invt_det = inv(invt_jacb, jacb_matr, E_info.dim);
 
         x  = real_coor[0];
         y  = real_coor[1];
@@ -90,13 +90,17 @@ void elemcalc (
 		}
     }
 
-	for (int i=0; i<E_info.node_cont*E_info.node_cont; i++)
-	    printf("%e\n",E_matr->matr_0[i]);
-    
-	for (int i=0; i<E_info.node_cont; i++)
-	    printf("%e\n",E_matr->righ_vect[i]);
-
-	printf("\n");
+	//show_elem_stif(E_info.node_cont, *Ematr);
 
 }
 
+void show_elem_stif(int node_cont, Elem_Matr Ematr)
+{
+	for (int i=0; i<node_cont*node_cont; i++)
+	    printf("%e\n",E_matr.matr_0[i]);
+    
+	for (int i=0; i<node_cont; i++)
+	    printf("%e\n",E_matr.righ_vect[i]);
+
+	printf("\n");
+}

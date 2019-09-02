@@ -11,6 +11,7 @@ void set_matr  (Elem_Matr*, int, Matr_Type*);
 void set_elem  (Elem_Info*, int, int, int, int);
 void reset_matr(Elem_Matr*, int, Matr_Type*);
 void show_elem (Elem_Info,  int, int, int, int);
+void show_matr (Equat_Set*);
 void clear_matr(Elem_Matr*);
 void clear_elem(Elem_Info*, int);
 void set_refr_shap(double**, double*, int, int, int);
@@ -46,6 +47,10 @@ void matrcalc(
         {
 
             memcpy(E_info.elem_node, &Mesh.mesh_topo[type_i-1][(elem_i-1)*elem_nodeN], elem_nodeN*sizeof(int));
+
+            if (E_info.elem_node[E_info.node_cont] <= 0)
+                continue;
+
 			memcpy(E_info.elem_mate, &Mate.mate[E_info.elem_node[E_info.node_cont]-1], Mate.mate_varN*sizeof(double));
             
 			for (int node_i=1; node_i<elem_nodeN; node_i++) {
@@ -58,11 +63,79 @@ void matrcalc(
             reset_matr(&E_matr, ematr_size, M_type);
 
 			elemcalc(elem_i, G_info, E_info, &E_matr);
+
+            // construct element left matrix
+            for (int dof_i=0; dof_i<ematr_size; dof_i++) {
+                
+                for (int dof_j; dof_j<ematr_size; dof_j++) {
+                    // distributed matrix
+                    E_matr.left_matr[dof_i*ematr_size + dof_j] += E_matr.matr_0[dof_i*ematr_size + dof_j];
+                }
+                // lumped matrix
+                E_matr.left_matr[dof_i*ematr_size + dof_i] += E_matr.matr_1[dof_i]*dt/2
+                                                           +  E_matr.matr_2[dof_i];
+            }
+
+            // construct total left matrix and right vector
+            for (int nod_i=0; nod_i<elem_nodeN-1; nod_i++) {
+                
+                int nodi_SN = E_info.elem_node[nod_i];
+
+                for (int dof_i=0; dof_i<node_dof; dof_i++) {
+
+                    int ID_i = Equa->node_equa_index[nodi_SN][dof_i];
+
+                    if (ID_i == 0)
+                        continue;
+
+                    if (ID_i  > 0) {
+
+                        // lumped matrix
+                        Equa->vector[ID_i] += E_matr.righ_vect[nod_i*node_dof + dof_i] * dt*dt/2
+                                           +  E_matr.matr_2   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i]
+                                           +  E_matr.matr_2   [nod_i*node_dof + dof_i] * v_n[(nodi_SN-1)*node_dof + dof_i] * dt
+                                           +  E_matr.matr_1   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i] * dt/2;
+                    }
+
+                    int idx = 0;
+
+                    for (int nod_j=0; nod_j<elem_nodeN-1; nod_j++) {
+
+                        int nodj_SN = E_info.elem_node[nod_j];
+
+                        for (int dof_j; dof_j<node_dof; dof_j++) {
+
+                            int ID_j = Equa->node_equa_index[nodj_SN][dof_j];
+
+                            if (ID_j == 0)
+                                continue;
+
+                            if (ID_j  > 0) {
+
+                                // distributed matrix
+                                int matrix_index = (nod_i*node_dof + dof_i)*ematr_size + (nod_j*node_dof + dof_j);
+                                Equa->vector[ID_j] += -E_matr.matr_0[matrix_index] * u_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/4
+                                                   +   E_matr.matr_0[matrix_index] * v_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/2;
+                            
+                                // deal with direclet boundary conditions
+                                if (ID_i < 0)
+                                    u[(nodj_SN-1)*node_dof+dof_j] -= E_matr.left_matr[matrix_index] * u[(nodi_SN-1)*node_dof+dof_i];
+
+                                else if (ID_i > 0)
+                                    Equa->matrix[ID_i][Equa->column_index[ID_i][idx++]] += E_matr.left_matr[matrix_index];
+                            
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         clear_matr(&E_matr);
         clear_elem(&E_info, G_info.gaus_num);
     }
+
+    show_matr(*Equa);
 }
 
 void set_matr(Elem_Matr* E_matr, int elem_dof, Matr_Type *M_type)
@@ -161,4 +234,14 @@ void show_elem(Elem_Info E_info, int dim, int elem_nodeN, int mate_varN, int gau
 		printf("\n");
 	}
 
+}
+
+void show_matr(Equat_Set Equa)
+{
+    for (int i=0; i<Equa.total_equations; i++){
+        printf("%d: ",i+1);
+        for (int j=0; j<Equa.row_nontriaval[i]; j++)
+            printf("%d,%e ",Equa.column_index[i][j],Equa.matrix[i][j]);
+        printf("-->%e\n",Equa.vector[i]);
+    }
 }

@@ -94,7 +94,7 @@ void elemcalc (
 
 }
 
-void show_elem_stif(int node_cont, Elem_Matr Ematr)
+void show_elem_stif(int node_cont, Elem_Matr E_matr)
 {
 	for (int i=0; i<node_cont*node_cont; i++)
 	    printf("%e\n",E_matr.matr_0[i]);

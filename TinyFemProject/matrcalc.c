@@ -11,7 +11,7 @@ void set_matr  (Elem_Matr*, int, Matr_Type*);
 void set_elem  (Elem_Info*, int, int, int, int);
 void reset_matr(Elem_Matr*, int, Matr_Type*);
 void show_elem (Elem_Info,  int, int, int, int);
-void show_matr (Equat_Set*);
+void show_matr (Equat_Set);
 void clear_matr(Elem_Matr*);
 void clear_elem(Elem_Info*, int);
 void set_refr_shap(double**, double*, int, int, int);
@@ -72,8 +72,8 @@ void matrcalc(
                     E_matr.left_matr[dof_i*ematr_size + dof_j] += E_matr.matr_0[dof_i*ematr_size + dof_j];
                 }
                 // lumped matrix
-                E_matr.left_matr[dof_i*ematr_size + dof_i] += E_matr.matr_1[dof_i]*dt/2
-                                                           +  E_matr.matr_2[dof_i];
+                //E_matr.left_matr[dof_i*ematr_size + dof_i] += E_matr.matr_1[dof_i]*dt/2
+                //                                           +  E_matr.matr_2[dof_i];
             }
 
             // construct total left matrix and right vector
@@ -91,10 +91,10 @@ void matrcalc(
                     if (ID_i  > 0) {
 
                         // lumped matrix
-                        Equa->vector[ID_i] += E_matr.righ_vect[nod_i*node_dof + dof_i] * dt*dt/2
-                                           +  E_matr.matr_2   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i]
-                                           +  E_matr.matr_2   [nod_i*node_dof + dof_i] * v_n[(nodi_SN-1)*node_dof + dof_i] * dt
-                                           +  E_matr.matr_1   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i] * dt/2;
+                        //Equa->vector[ID_i] += E_matr.righ_vect[nod_i*node_dof + dof_i] * dt*dt/2
+                        //                   +  E_matr.matr_2   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i]
+                        //                   +  E_matr.matr_2   [nod_i*node_dof + dof_i] * v_n[(nodi_SN-1)*node_dof + dof_i] * dt
+                        //                   +  E_matr.matr_1   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i] * dt/2;
                     }
 
                     int idx = 0;
@@ -114,8 +114,8 @@ void matrcalc(
 
                                 // distributed matrix
                                 int matrix_index = (nod_i*node_dof + dof_i)*ematr_size + (nod_j*node_dof + dof_j);
-                                Equa->vector[ID_j] += -E_matr.matr_0[matrix_index] * u_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/4
-                                                   +   E_matr.matr_0[matrix_index] * v_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/2;
+                                //Equa->vector[ID_j] += -E_matr.matr_0[matrix_index] * u_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/4
+                                //                   +   E_matr.matr_0[matrix_index] * v_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/2;
                             
                                 // deal with direclet boundary conditions
                                 if (ID_i < 0)

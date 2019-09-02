@@ -9,6 +9,8 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
+#include <ctype.h>
+#include <stdbool.h>
 
 typedef enum Mesh_Type {P1=1, L2, L3, T3, T6, Q4, Q8, Q9, W4, W10, C8, C20, C27, H6, H15, H18} Mesh_Type;
 typedef enum Matr_Type {lump=1, dist} Matr_Type;
@@ -40,7 +42,7 @@ typedef struct Coor_Info
 typedef struct Node_Mesh
 {
 	Mesh_Type *type;
-	int typeN, *elem_nodeN, *mesh_scale, *mesh_topo;
+	int typeN, *elem_nodeN, *mesh_scale, **mesh_topo;
 }Node_Mesh;
 
 typedef struct Materail
@@ -51,14 +53,27 @@ typedef struct Materail
 
 typedef struct Equation_Set
 {
-	int total_equations, total_nontriaval, *triaval_per_row, **column_index;
+	int      total_equations;
+    int      total_nontriaval;
+    int     *row_nontriaval;
+    int    **column_index;
+    int    **node_equa_index;
 	double **matrix,*vector;
 }Equat_Set;
 
-typedef struct Dirichlet
+typedef struct Dof_Tag
 {
-    int  dirichlet_nodn;
-    int *dirichlet_nods;
+    int     tag_nodn;
+    int    *tag_nods;
+    int     dof_num;
     int    *dof_tag;
     double *dof_val;
-}Dirichlet;
+}Dof_Tag;
+
+typedef struct init_data
+{
+    double *init_0, *init_1, *init_2;
+    int dof_num;
+    int total_nodes;
+    int init_oder;
+}Init_Data;

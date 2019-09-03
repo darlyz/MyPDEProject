@@ -94,3 +94,14 @@ void elemcalc (
 	//show_elem_stif(E_info.node_cont, *E_matr);
 
 }
+
+void show_elem_stif(int node_cont, Elem_Matr E_matr)
+{
+	for (int i=0; i<node_cont*node_cont; i++)
+	    printf("%e\n",E_matr.matr_0[i]);
+    
+	for (int i=0; i<node_cont; i++)
+	    printf("%e\n",E_matr.righ_vect[i]);
+
+	printf("\n");
+}

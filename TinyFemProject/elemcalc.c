@@ -9,6 +9,7 @@
 double transe_coor(double*,double*,double*,double*,int,int);
 double inv(double*,double*,int);
 void calc_real_shap(int, int, double*, double*, double*);
+void show_elem_stif(int, Elem_Matr);
 
 void elemcalc (
     int elem_n,
@@ -90,7 +91,7 @@ void elemcalc (
 		}
     }
 
-	//show_elem_stif(E_info.node_cont, *Ematr);
+	//show_elem_stif(E_info.node_cont, *E_matr);
 
 }
 

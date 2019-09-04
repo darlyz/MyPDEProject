@@ -7,7 +7,7 @@ void matrcalc();
 int main(int argc, char* argv[])
 {
 
-    char data_file[]="./mesh/exam2.gid/exam2.dat";
+    char data_file[]="./mesh/exam3.gid/exam3.dat";
     Coor_Info Coor;
     Node_Mesh Mesh;
     Init_Data Init;
@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
     double* result;
 
     readmesh(&Coor, &Mesh, &ID, &Init, data_file);
+    Mesh.typeN = 1;
     initial ( Coor,  Mesh,  ID, &Equa, &result, node_dof);
     matrcalc( Coor,  Mesh,  ID, &Equa, Mate, result, node_dof);
 }

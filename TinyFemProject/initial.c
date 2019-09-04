@@ -19,8 +19,8 @@ void initial(
     double **result,
     int node_dof
 ){
-
-    (*result) = (double *)calloc(Coor.total_nodes*node_dof,sizeof(int));
+    // ---------------------------------------- initial solution space ----------------------------------------
+    (*result) = (double *)calloc(Coor.total_nodes*node_dof, sizeof(int));
     for (int i=0; i<ID.tag_nodn; i++) {
         int node_SN = ID.tag_nods[i] - 1;
         for (int j=0; j<ID.dof_num; j++)
@@ -65,7 +65,6 @@ void initial(
     //show_adj(adj_nodn, adj_topo, Coor.total_nodes);
 
     // --------------------------------------- initial Equation Set ---------------------------------------
-
     //int constraint_count = 0;
     //for (int i=0; i<ID.tag_nodn; i++)
     //    for (int j=0; j<ID.dof_num; j++)
@@ -115,7 +114,6 @@ void initial(
 
 
     // --------------------------------------- convert graph to matrix ---------------------------------------
-
     Equa->total_nontriaval = 0;
     for (int i=0; i<Coor.total_nodes; i++)
 

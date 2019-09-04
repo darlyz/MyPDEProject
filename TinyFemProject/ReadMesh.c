@@ -233,6 +233,7 @@ void readmesh(
 
             if (line_count == 1) {
 
+                /*
                 if (strncmp(temp_str, "l2", 2) == 0)
                     Mesh->type[Mesh->typeN-1] = L2;
 
@@ -277,6 +278,125 @@ void readmesh(
 
                 else if (strncmp(temp_str, "h18", 3) == 0)
                     Mesh->type[Mesh->typeN-1] = H18;
+                */
+                
+                char shap_type = temp_str[0];
+                int  shap_nodn;
+                sscanf(temp_str + 1, "%d", &shap_nodn);
+
+                switch (shap_type) {
+                    case 'l':
+                        switch (shap_nodn) {
+                            case 2:
+                                Mesh->type[Mesh->typeN-1] = L2;
+                                break;
+                            case 3:
+                                Mesh->type[Mesh->typeN-1] = L3;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    case 't':
+                        switch (shap_nodn) {
+                            case 3:
+                                Mesh->type[Mesh->typeN-1] = T3;
+                                break;
+                            case 6:
+                                Mesh->type[Mesh->typeN-1] = T6;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    case 'q':
+                        switch (shap_nodn) {
+                            case 4:
+                                Mesh->type[Mesh->typeN-1] = Q4;
+                                break;
+                            case 8:
+                                Mesh->type[Mesh->typeN-1] = Q8;
+                                break;
+                            case 9:
+                                Mesh->type[Mesh->typeN-1] = Q9;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    case 'w':
+                        switch (shap_nodn) {
+                            case 4:
+                                Mesh->type[Mesh->typeN-1] = W4;
+                                break;
+                            case 10:
+                                Mesh->type[Mesh->typeN-1] = W10;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    case 'c':
+                        switch (shap_nodn) {
+                            case 8:
+                                Mesh->type[Mesh->typeN-1] = C8;
+                                break;
+                            case 20:
+                                Mesh->type[Mesh->typeN-1] = C20;
+                                break;
+                            case 27:
+                                Mesh->type[Mesh->typeN-1] = C27;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    case 'h':
+                        switch (shap_nodn) {
+                            case 6:
+                                Mesh->type[Mesh->typeN-1] = H6;
+                                break;
+                            case 15:
+                                Mesh->type[Mesh->typeN-1] = H15;
+                                break;
+                            case 18:
+                                Mesh->type[Mesh->typeN-1] = H18;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    case 'p':
+                        switch (shap_nodn) {
+                            case 1:
+                                Mesh->type[Mesh->typeN-1] = P1;
+                                break;
+                            case 5:
+                                Mesh->type[Mesh->typeN-1] = P5;
+                                break;
+                            case 13:
+                                Mesh->type[Mesh->typeN-1] = P13;
+                                break;
+                            case 14:
+                                Mesh->type[Mesh->typeN-1] = P14;
+                                break;
+                            default:
+                                printf("Unknown shap type: %s!\n",temp_str);
+                                return;
+                        }
+                        break;
+                    default:
+                        printf("Unknown shap type: %s!\n",temp_str);
+                        return;
+                }
+
+
             }
 
             else if (line_count == 2) {

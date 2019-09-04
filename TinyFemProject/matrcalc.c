@@ -18,7 +18,7 @@ void clear_elem();
 void set_refr_shap();
 void elemcalc();
 void show_elem_stif();
-int  Binary_Search();
+int  Binary_Search_();
 
 void matrcalc(
     Coor_Info  Coor,
@@ -94,17 +94,19 @@ void matrcalc(
 
                     int ID_i = Equa->node_equa_index[nodi_SN-1][dof_i];
 
+                    int MD_i = nod_i*node_dof + dof_i;
+
                     if (ID_i == 0)
                         continue;
 
                     if (ID_i  > 0) {
 
                         // lumped matrix
-                        Equa->vector[ID_i-1] += E_matr.righ_vect[nod_i*node_dof + dof_i];
-                        //                   +  E_matr.righ_vect[nod_i*node_dof + dof_i] * dt*dt/2
-                        //                   +  E_matr.matr_2   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i]
-                        //                   +  E_matr.matr_2   [nod_i*node_dof + dof_i] * v_n[(nodi_SN-1)*node_dof + dof_i] * dt
-                        //                   +  E_matr.matr_1   [nod_i*node_dof + dof_i] * u_n[(nodi_SN-1)*node_dof + dof_i] * dt/2;
+                        Equa->vector[ID_i-1] += E_matr.righ_vect[MD_i];
+                        //                   +  E_matr.righ_vect[MD_i] * dt*dt/2
+                        //                   +  E_matr.matr_2   [MD_i] * u_n[(nodi_SN-1)*node_dof + dof_i]
+                        //                   +  E_matr.matr_2   [MD_i] * v_n[(nodi_SN-1)*node_dof + dof_i] * dt
+                        //                   +  E_matr.matr_1   [MD_i] * u_n[(nodi_SN-1)*node_dof + dof_i] * dt/2;
                     }
 
                     int idx = 0;
@@ -118,38 +120,35 @@ void matrcalc(
 
                             int ID_j = Equa->node_equa_index[nodj_SN-1][dof_j];
 
+                            int MD_j = nod_j*node_dof + dof_j;
+
                             if (ID_j == 0)
                                 continue;
 
                             if (ID_j  > 0) {
 
                                 // distributed matrix
-                                int matrix_index = (nod_i*node_dof + dof_i)*ematr_size + (nod_j*node_dof + dof_j);
-                                //Equa->vector[ID_j-1] += -E_matr.matr_0[matrix_index] * u_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/4
-                                //                   +   E_matr.matr_0[matrix_index] * v_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/2;
+                                //Equa->vector[ID_j-1] += -E_matr.matr_0[MD_i*ematr_size + MD_j] * u_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/4
+                                //                     +   E_matr.matr_0[MD_i*ematr_size + MD_j] * v_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/2;
                             
                                 // deal with direclet boundary conditions
                                 if (ID_i < 0)
-                                    Equa->vector[ID_j-1] -= E_matr.left_matr[matrix_index] * result[(nodi_SN-1)*node_dof+dof_i];
+                                    Equa->vector[ID_j-1] -= E_matr.left_matr[MD_i*ematr_size + MD_j] * result[(nodi_SN-1)*node_dof+dof_i];
 
                                 else if (ID_i > 0) {
 
-                                    idx = Binary_Search(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
-                                    Equa->matrix[ID_i-1][idx] += E_matr.left_matr[matrix_index];
-                                    //idx ++;
+                                    jdx = Binary_Search_(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
+                                    Equa->matrix[ID_i-1][jdx] += E_matr.left_matr[MD_i*ematr_size + MD_j];
+                                    //jdx ++;
                                 }
-                            
                             }
                         }
                     }
                 }
             }
         }
-printf("!!!!!!!!!!!!!!!!!!!!!!  1\n");
         clear_matr(&E_matr);
-printf("!!!!!!!!!!!!!!!!!!!!!!  2\n");
         clear_elem(&E_info, G_info.gaus_num);
-printf("!!!!!!!!!!!!!!!!!!!!!!  3\n");
     }
 
     show_matr(*Equa);

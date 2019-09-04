@@ -315,4 +315,5 @@ void readmesh(
             }
         }
     }
+    printf("Read mesh done!\n");
 }

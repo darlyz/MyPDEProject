@@ -3,21 +3,30 @@
 #define init_adj_num 20
 #define minsize_int32 -2147483648
 
-void free_adj(int, int*, int**);
-void int_qsort(int*, int);
-void insert_node(int, int, int*, int**);
-void show_adj(int*, int**, int);
-void show_node_eq_index(Equat_Set, int, int);
-void show_non_trivial(Equat_Set);
+void free_adj();
+void int_qsort();
+void insert_node();
+void insert_node_();
+void show_adj();
+void show_node_eq_index();
+void show_non_trivial();
 
 void initial(
     Coor_Info Coor,
     Node_Mesh Mesh,
     Dof_Tag   ID,
     Equat_Set *Equa,
+    double **result,
     int node_dof
-    
 ){
+
+    (*result) = (double *)calloc(Coor.total_nodes*node_dof,sizeof(int));
+    for (int i=0; i<ID.tag_nodn; i++) {
+        int node_SN = ID.tag_nods[i] - 1;
+        for (int j=0; j<ID.dof_num; j++)
+            if (ID.dof_tag[i*ID.dof_num + j] == -1 )
+                (*result)[node_SN*ID.dof_num + j] = ID.dof_val[i*ID.dof_num + j];
+    }
 
     // ---------------------------------------- convert mesh to graph ----------------------------------------
     int   nodeN;
@@ -33,11 +42,9 @@ void initial(
     for (int type_i=0; type_i<Mesh.typeN; type_i++) {
 
         nodeN = Mesh.elem_nodeN[type_i] -1;
-        //node = (int*)malloc(nodeN*sizeof(int));
 
         for (int elem_i=0; elem_i<Mesh.mesh_scale[type_i]; elem_i++) {
 
-            //memcpy(node, &Mesh.mesh_topo[type_i][elem_i*Mesh.elem_nodeN[type_i]], nodeN*sizeof(int));
             node = &Mesh.mesh_topo[type_i][elem_i*Mesh.elem_nodeN[type_i]];
 
             for (int node_i=0; node_i<nodeN; node_i++) {
@@ -47,7 +54,9 @@ void initial(
                     if (node_i == node_j)
                         continue;
 
-                    insert_node(adj_topo[node[node_i]-1], &adj_nodn[node[node_i]-1], init_adj_num, node[node_j]);
+                    insert_node(&(adj_topo[node[node_i] - 1]), &(adj_nodn[node[node_i] - 1]), init_adj_num, node[node_j]);
+                    //insert_node_(node[node_i], node[node_j], adj_nodn, adj_topo);
+
                 }
             }
         }
@@ -157,7 +166,7 @@ void initial(
 
     free_adj(Coor.total_nodes, adj_nodn, adj_topo);
 
-    printf("initial done!\n");
+    printf("Initial done!\n");
 }
 
 void free_adj(int total_nodes, int* adj_nodn, int** adj_topo) {

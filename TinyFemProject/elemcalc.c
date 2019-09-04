@@ -6,10 +6,10 @@
 */
 #include "fem.h"
 
-double transe_coor(double*,double*,double*,double*,int,int);
-double inv(double*,double*,int);
-void calc_real_shap(int, int, double*, double*, double*);
-void show_elem_stif(int, Elem_Matr);
+double transe_coor();
+double inv();
+void calc_real_shap();
+void show_elem_stif();
 
 void elemcalc (
     int elem_n,

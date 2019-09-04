@@ -1,13 +1,13 @@
 #include "fem.h"
 
-void readmesh(Coor_Info*, Node_Mesh*, Dof_Tag*, Init_Data*, char*);
-void initial (Coor_Info,  Node_Mesh,  Dof_Tag,  Equat_Set*, int);
-void matrcalc(Coor_Info,  Node_Mesh,  Dof_Tag,  Equat_Set*, Materail, int);
+void readmesh();
+void initial ();
+void matrcalc();
 
 int main(int argc, char* argv[])
 {
 
-    char data_file[]="./mesh/exam.gid/exam.dat";
+    char data_file[]="./mesh/exam2.gid/exam2.dat";
     Coor_Info Coor;
     Node_Mesh Mesh;
     Init_Data Init;
@@ -15,8 +15,9 @@ int main(int argc, char* argv[])
     Materail  Mate;
     Dof_Tag   ID;
     int node_dof = 1;
+    double* result;
 
     readmesh(&Coor, &Mesh, &ID, &Init, data_file);
-    initial ( Coor,  Mesh,  ID, &Equa, node_dof);
-    matrcalc( Coor,  Mesh,  ID, &Equa, Mate, node_dof);
+    initial ( Coor,  Mesh,  ID, &Equa, &result, node_dof);
+    matrcalc( Coor,  Mesh,  ID, &Equa, Mate, result, node_dof);
 }

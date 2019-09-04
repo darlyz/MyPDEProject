@@ -6,18 +6,19 @@
 */
 #include "fem.h"
 
-void set_gaus  (Gaus_Info*);
-void set_matr  (Elem_Matr*, int, Matr_Type*);
-void set_elem  (Elem_Info*, int, int, int, int);
-void reset_matr(Elem_Matr*, int, Matr_Type*);
-void show_elem (Elem_Info,  int, int, int);
-void show_matr (Equat_Set);
-void show_elem_matr(Elem_Matr, int, Matr_Type*);
-void clear_matr(Elem_Matr*);
-void clear_elem(Elem_Info*, int);
-void set_refr_shap(double**, double*, int, int, int);
-void elemcalc(int, Gaus_Info, Elem_Info, Elem_Matr*);
-int  Binary_Search(int*, int, int);
+void set_gaus  ();
+void set_matr  ();
+void set_elem  ();
+void reset_matr();
+void show_elem ();
+void show_matr ();
+void show_elem_matr();
+void clear_matr();
+void clear_elem();
+void set_refr_shap();
+void elemcalc();
+void show_elem_stif();
+int  Binary_Search();
 
 void matrcalc(
     Coor_Info  Coor,
@@ -28,13 +29,6 @@ void matrcalc(
     double *result,
     int node_dof
 ){
-
-    for (int i=0; i<ID.tag_nodn; i++) {
-        int node_SN = ID.tag_nods[i] - 1;
-        for (int j=0; j<ID.dof_num; j++)
-            if (ID.dof_tag[i*ID.dof_num + j] == -1 )
-                result[node_SN*ID.dof_num + j] = ID.dof_val[i*ID.dof_num + j];
-    }
 
     int pre_node = 0;
     for (int type_i=1; type_i<=Mesh.typeN; type_i++)
@@ -75,13 +69,14 @@ void matrcalc(
 
 			elemcalc(elem_i, G_info, E_info, &E_matr);
 
+            //show_elem_stif(E_info.node_cont, E_matr);
             //show_elem(E_info, elem_nodeN, Mate.mate_varN, G_info.gaus_num);
             //show_elem_matr(E_matr, ematr_size, M_type);
 
             // construct element left matrix
             for (int dof_i=0; dof_i<ematr_size; dof_i++) {
                 
-                for (int dof_j; dof_j<ematr_size; dof_j++) {
+                for (int dof_j=0; dof_j<ematr_size; dof_j++) {
                     // distributed matrix
                     E_matr.left_matr[dof_i*ematr_size + dof_j] += E_matr.matr_0[dof_i*ematr_size + dof_j];
                 }
@@ -138,7 +133,7 @@ void matrcalc(
                                     Equa->vector[ID_j-1] -= E_matr.left_matr[matrix_index] * result[(nodi_SN-1)*node_dof+dof_i];
 
                                 else if (ID_i > 0) {
-                                    printf("%d\n",++jdx);
+
                                     idx = Binary_Search(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
                                     Equa->matrix[ID_i-1][idx] += E_matr.left_matr[matrix_index];
                                     //idx ++;
@@ -150,9 +145,11 @@ void matrcalc(
                 }
             }
         }
-
+printf("!!!!!!!!!!!!!!!!!!!!!!  1\n");
         clear_matr(&E_matr);
+printf("!!!!!!!!!!!!!!!!!!!!!!  2\n");
         clear_elem(&E_info, G_info.gaus_num);
+printf("!!!!!!!!!!!!!!!!!!!!!!  3\n");
     }
 
     show_matr(*Equa);

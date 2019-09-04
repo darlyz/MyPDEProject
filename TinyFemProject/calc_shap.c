@@ -1,6 +1,7 @@
 #include "fem.h"
 double lagrange_shapfunc(double*, int);
 double lagrange_deriva_shapfunc(double*, int, int);
+double det(double*,int);
 
 // return *jacb_matr and |jacb_matr|
 double jacobi(

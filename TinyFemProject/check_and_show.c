@@ -101,3 +101,16 @@ void show_elem_matr(Elem_Matr E_matr, int ematr_size, Matr_Type *M_type) {
     for (int i=0; i<ematr_size; i++)
         printf("%e\n",E_matr.righ_vect[i]);
 }
+
+void show_mesh(Node_Mesh Mesh) {
+    for (int i=0; i<Mesh.typeN; i++) {
+        printf("type_i=%d\n",i+1);
+        for(int j=0; j<Mesh.mesh_scale[i];j++) {
+            printf("elem_i=%d: ",j+1);
+            for (int k=0; k<Mesh.elem_nodeN[i];k++)
+                printf("%d ",Mesh.mesh_topo[i][j*Mesh.elem_nodeN[i]+k]);
+            printf("\n");
+        }
+        printf("\n");
+    }
+}

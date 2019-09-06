@@ -3,6 +3,7 @@
 void readmesh();
 void initial ();
 void matrcalc();
+void show_mesh();
 
 int main(int argc, char* argv[])
 {
@@ -18,7 +19,9 @@ int main(int argc, char* argv[])
     double* result;
 
     readmesh(&Coor, &Mesh, &ID, &Init, data_file);
-    Mesh.typeN = 1;
+    //show_mesh(Mesh);
+    //Mesh.typeN = 1;
     initial ( Coor,  Mesh,  ID, &Equa, &result, node_dof);
     matrcalc( Coor,  Mesh,  ID, &Equa, Mate, result, node_dof);
+    matrsolv( Equa );
 }

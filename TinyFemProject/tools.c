@@ -104,7 +104,7 @@ int Binary_Search_(int* dest, int dest_len, int key) {
     int insert    = 0;
 
     if (dest_len == 0)
-        return 0;
+        return -1;
 
     while(1)
     {
@@ -118,10 +118,8 @@ int Binary_Search_(int* dest, int dest_len, int key) {
 
         else
             return idx_mid;
-
-        if (idx_start >= idx_end)
-            return -1;
     }
+    return -1;
 }
 
 // return -1 if found, return insert index if not found
@@ -136,7 +134,18 @@ int traversal_search(int* dest, int dest_len, int key) {
         else if ( dest[i] < key && dest[i+1] > key)
             return i+1;
     }
+    return -1;
+}
 
+// return -1 if not found, return matched index if found
+int traversal_search_(int* dest, int dest_len, int key) {
+    for (int i=0; i<dest_len; i++) {
+        if ( dest[0] > key )
+            return -1;
+
+        else if ( dest[i] == key )
+            return i;
+    }
     return -1;
 }
 

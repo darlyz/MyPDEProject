@@ -19,6 +19,7 @@ void set_refr_shap();
 void elemcalc();
 void show_elem_stif();
 int  Binary_Search_();
+int  traversal_search_();
 
 void matrcalc(
     Coor_Info  Coor,
@@ -110,7 +111,6 @@ void matrcalc(
                     }
 
                     int idx = 0;
-                    int jdx = 0;
 
                     for (int nod_j=0; nod_j<elem_nodeN-1; nod_j++) {
 
@@ -135,11 +135,16 @@ void matrcalc(
                                 if (ID_i < 0)
                                     Equa->vector[ID_j-1] -= E_matr.left_matr[MD_i*ematr_size + MD_j] * result[(nodi_SN-1)*node_dof+dof_i];
 
+                                // compose whole matrix
                                 else if (ID_i > 0) {
 
-                                    jdx = Binary_Search_(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
-                                    Equa->matrix[ID_i-1][jdx] += E_matr.left_matr[MD_i*ematr_size + MD_j];
-                                    //jdx ++;
+                                    idx = Binary_Search_(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
+
+                                    if (idx == -1)
+                                        continue;
+
+                                    Equa->matrix[ID_i-1][idx] += E_matr.left_matr[MD_i*ematr_size + MD_j];
+                                    //idx ++;
                                 }
                             }
                         }
@@ -151,7 +156,8 @@ void matrcalc(
         clear_elem(&E_info, G_info.gaus_num);
     }
 
-    show_matr(*Equa);
+    //show_matr(*Equa);
+    printf("Compose whole matrix done!\n");
 }
 
 void set_matr(Elem_Matr* E_matr, int elem_dof, Matr_Type *M_type)

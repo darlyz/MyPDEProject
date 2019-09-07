@@ -3,6 +3,7 @@
 void readmesh();
 void initial ();
 void matrcalc();
+void matrsolv();
 void show_mesh();
 
 int main(int argc, char* argv[])

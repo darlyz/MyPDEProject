@@ -70,8 +70,8 @@ void matrcalc(
 
 			elemcalc(elem_i, G_info, E_info, &E_matr);
 
-            //show_elem_stif(E_info.node_cont, E_matr);
             //show_elem(E_info, elem_nodeN, Mate.mate_varN, G_info.gaus_num);
+            //show_elem_stif(E_info.node_cont, E_matr);
             //show_elem_matr(E_matr, ematr_size, M_type);
 
             // construct element left matrix
@@ -102,7 +102,7 @@ void matrcalc(
 
                     if (ID_i  > 0) {
 
-                        // lumped matrix
+                        // lumped matrix for right vector
                         Equa->vector[ID_i-1] += E_matr.righ_vect[MD_i];
                         //                   +  E_matr.righ_vect[MD_i] * dt*dt/2
                         //                   +  E_matr.matr_2   [MD_i] * u_n[(nodi_SN-1)*node_dof + dof_i]
@@ -127,7 +127,7 @@ void matrcalc(
 
                             if (ID_j  > 0) {
 
-                                // distributed matrix
+                                // distributed matrix for right vector
                                 //Equa->vector[ID_j-1] += -E_matr.matr_0[MD_i*ematr_size + MD_j] * u_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/4
                                 //                     +   E_matr.matr_0[MD_i*ematr_size + MD_j] * v_n[(nodi_SN-1)*node_dof + dof_i] *dt*dt/2;
                             
@@ -140,7 +140,7 @@ void matrcalc(
 
                                     idx = Binary_Search_(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
 
-                                    if (idx == -1)
+                                    if (idx <= 0)
                                         continue;
 
                                     Equa->matrix[ID_i-1][idx] += E_matr.left_matr[MD_i*ematr_size + MD_j];

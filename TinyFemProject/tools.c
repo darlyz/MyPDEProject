@@ -74,12 +74,13 @@ int Binary_Search(int* dest, int dest_len, int key) {
 
     while(1)
     {
-        idx_mid = (idx_start + idx_end)/2;
+        idx_mid = idx_start + (idx_end - idx_start)/2;
 
         if (key < dest[idx_mid])
             idx_end   = idx_mid - 1;
 
-        else if (key > dest[idx_mid])
+        else
+        if (key > dest[idx_mid])
             idx_start = idx_mid + 1;
 
         else
@@ -106,14 +107,15 @@ int Binary_Search_(int* dest, int dest_len, int key) {
     if (dest_len == 0)
         return -1;
 
-    while(1)
+    while(idx_start <= idx_end)
     {
-        idx_mid = (idx_start + idx_end)/2;
+        idx_mid = idx_start + (idx_end - idx_start)/2;
 
         if (key < dest[idx_mid])
             idx_end   = idx_mid - 1;
 
-        else if (key > dest[idx_mid])
+        else
+        if (key > dest[idx_mid])
             idx_start = idx_mid + 1;
 
         else

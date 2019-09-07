@@ -54,9 +54,8 @@ void initial(
                     if (node_i == node_j)
                         continue;
 
-                    insert_node(&(adj_topo[node[node_i] - 1]), &(adj_nodn[node[node_i] - 1]), init_adj_num, node[node_j]);
+                    insert_node(adj_topo + node[node_i] - 1, adj_nodn + node[node_i] - 1, init_adj_num, node[node_j]);
                     //insert_node_(node[node_i], node[node_j], adj_nodn, adj_topo);
-
                 }
             }
         }

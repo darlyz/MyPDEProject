@@ -53,7 +53,7 @@ void matrsolv(Equat_Set Equa) {
     double params[AZ_PARAMS_SIZE];
 
     AZ_defaults(noptions, params);
-    choose_solver_options(noptions, params);
+    //choose_solver_options(noptions, params);
 
     params  [AZ_tol      ] = 1e-8;
     //params  [Az_dropout  ] = 0.  ;
@@ -79,8 +79,9 @@ void matrsolv(Equat_Set Equa) {
     AZ_set_proc_config(nproc_config, AZ_NOT_MPI);
 
     int MSRorVBR = AZ_MSR_MATRIX;
-
+printf("!!!!!!!!!!!!!\n");
     AZ_solve(x,b, noptions, params,NULL,bindx,NULL,NULL,
              NULL,val, ndata_org, status, nproc_config);
 
+    printf("solv done!\n");
 }

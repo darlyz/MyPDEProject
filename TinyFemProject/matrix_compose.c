@@ -46,7 +46,7 @@ void matrcalc(
 		
 		set_gaus(&G_info);
 		set_matr(&E_matr, ematr_size, M_type);
-		set_elem(&E_info, Coor.dim, elem_nodeN, Mate.mate_varN, G_info.gaus_num);
+		set_elem(&E_info, Coor.dim, elem_nodeN, Mate.mate_varN[0], G_info.gaus_num);
         set_refr_shap(E_info.refr_shap, G_info.gaus_coor, G_info.gaus_num, E_info.node_cont, E_info.dim);
 
         for (int elem_i=1; elem_i<=mesh_scale; elem_i++)
@@ -57,8 +57,8 @@ void matrcalc(
             if (E_info.elem_node[E_info.node_cont] <= 0)
                 continue;
 
-			memcpy(E_info.elem_mate, &Mate.mate[E_info.elem_node[E_info.node_cont]-1], Mate.mate_varN*sizeof(double));
-            
+			memcpy(E_info.elem_mate, &Mate.mate[0][E_info.elem_node[E_info.node_cont]-1], Mate.mate_varN[0]*sizeof(double));
+
 			for (int node_i=1; node_i<elem_nodeN; node_i++) {
                 for (int dim_i=1; dim_i<=E_info.dim; dim_i++)
 

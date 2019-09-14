@@ -4,7 +4,7 @@ double lagrange_deriva_shapfunc(double*, int, int);
 double det(double*,int);
 
 // return *jacb_matr and |jacb_matr|
-double jacobi(
+double calc_jacobi(
 	double* node_coor,
 	double* refr_coor,
 	double* jacb_matr,
@@ -30,7 +30,7 @@ double transe_coor(
     for (int i=1; i<=dim; i++)
 		for (int node_i=1; node_i<=shap_nodn; node_i++)
 			real_coor[i-1] += node_coor[(i-1)*shap_nodn + node_i-1] * lagrange_shapfunc(refr_coor, node_i);
-	return jacobi(node_coor, refr_coor, jacb_matr, dim, shap_nodn);
+	return calc_jacobi(node_coor, refr_coor, jacb_matr, dim, shap_nodn);
 }
 
 // return *refr_shap

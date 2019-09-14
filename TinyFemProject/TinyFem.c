@@ -1,6 +1,7 @@
 #include "fem.h"
 
 void readmesh();
+void readmate();
 void initial ();
 void matrcalc();
 void matrsolv();
@@ -10,6 +11,7 @@ int main(int argc, char* argv[])
 {
 
     char data_file[]="./mesh/exam3.gid/exam3.dat";
+    char mate_file[]="./mate/exam3.mat";
     Coor_Info Coor;
     Node_Mesh Mesh;
     Init_Data Init;
@@ -20,6 +22,7 @@ int main(int argc, char* argv[])
     double* result;
 
     readmesh(&Coor, &Mesh, &ID, &Init, data_file);
+    readmate(&Mate, mate_file);
     //show_mesh(Mesh);
     //Mesh.typeN = 1;
     initial ( Coor,  Mesh,  ID, &Equa, &result, node_dof);

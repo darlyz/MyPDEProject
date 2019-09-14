@@ -20,8 +20,10 @@ void readmesh(
     double temp_double;
 
     FILE *ReadData;
-    if((ReadData=fopen(dat_file,"r"))==NULL)
+    if((ReadData=fopen(dat_file,"r"))==NULL) {
+        printf("Read mesh failed!\n");
         return;
+    }
 
     typedef enum{coor, id, value, init, mesh} paragh;
     paragh dataparagh;

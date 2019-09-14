@@ -49,8 +49,9 @@ typedef struct Node_Mesh
 
 typedef struct Materail
 {
-	int mate_type, mate_varN;   // materail count, parameter count
-	double* mate;               // materail parameter values
+    int field_num;
+	int *mate_cont, *mate_varN;   // materail count, parameter count
+	double** mate;                // materail parameter values
 }Materail;
 
 typedef struct Equation_Set

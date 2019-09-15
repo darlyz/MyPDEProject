@@ -140,7 +140,7 @@ void matrcalc(
 
                                     idx = Binary_Search_(Equa->column_index[ID_i-1], Equa->row_nontriaval[ID_i-1], ID_j);
 
-                                    if (idx <= 0)
+                                    if (idx < 0)
                                         continue;
 
                                     Equa->matrix[ID_i-1][idx] += E_matr.left_matr[MD_i*ematr_size + MD_j];
@@ -156,7 +156,7 @@ void matrcalc(
         clear_elem(&E_info, G_info.gaus_num);
     }
 
-    //show_matr(*Equa);
+    show_matr(*Equa);
     printf("Compose whole matrix done!\n");
 }
 

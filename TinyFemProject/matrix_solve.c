@@ -3,6 +3,8 @@
 
 void matrsolv(Equat_Set Equa) {
 
+    //AZ_set_proc_config(AZ_set_proc_config, AZ_NOT_MPI);
+
     int total_nontriaval = Equa.total_nontriaval;
     int total_equations  = Equa.total_equations;
     int *row_nontriaval  = Equa.row_nontriaval;
@@ -20,13 +22,13 @@ void matrsolv(Equat_Set Equa) {
             bindx[0] = total_equations + 1;
         
         else {
-            nontrivial_count += row_nontriaval[eq_i-1];
-            bindx[eq_i] = nontrivial_count;
+            nontrivial_count += row_nontriaval[eq_i-1] - 1;
+            bindx[eq_i] = nontrivial_count + bindx[0];
         }
 
         for (int clm_i=0; clm_i<row_nontriaval[eq_i]; clm_i++) {
 
-            if (column_index[eq_i][clm_i] == eq_i) {
+            if (column_index[eq_i][clm_i] == eq_i + 1) {
 
                 val[eq_i] = matrix[eq_i][clm_i];
                 continue;
@@ -34,11 +36,16 @@ void matrsolv(Equat_Set Equa) {
 
             temp_count ++;
 
-            bindx[total_equations + temp_count] = column_index[eq_i][clm_i];
+            bindx[total_equations + temp_count] = column_index[eq_i][clm_i] - 1;
             val  [total_equations + temp_count] = matrix      [eq_i][clm_i];
         }
     }
-    bindx[total_equations] = nontrivial_count + row_nontriaval[total_equations-1];
+    nontrivial_count += row_nontriaval[total_equations-1] - 1;
+    bindx[total_equations] =  nontrivial_count + bindx[0];
+
+    for (int i = 0; i <total_nontriaval+1; i++) {
+        printf ("%d %le\n",bindx[i],val[i]);
+    }
 
     // 
     int N_update = total_equations;
@@ -48,6 +55,8 @@ void matrsolv(Equat_Set Equa) {
 
     double *b=(double *) calloc(N_update,sizeof(double));
     double *x=(double *) calloc(N_update,sizeof(double));
+
+    memcpy(b,Equa.vector,N_update*sizeof(double));
 
     int  noptions[AZ_OPTIONS_SIZE];
     double params[AZ_PARAMS_SIZE];
@@ -63,7 +72,7 @@ void matrsolv(Equat_Set Equa) {
     noptions[AZ_precond  ] = AZ_ls ;
     noptions[AZ_poly_ord ] = 7 ;
     noptions[AZ_scaling  ] = AZ_none ;
-    noptions[AZ_output   ] = 9 ;
+    noptions[AZ_output   ] = 1 ;
 
 
     //----------------------------------------------------------------
@@ -79,9 +88,28 @@ void matrsolv(Equat_Set Equa) {
     AZ_set_proc_config(nproc_config, AZ_NOT_MPI);
 
     int MSRorVBR = AZ_MSR_MATRIX;
-printf("!!!!!!!!!!!!!\n");
+
+    AZ_transform(nproc_config,&nexternal,bindx,val,update,
+                 &nupdate_index,&nextern_index,&ndata_org,
+                 N_update, NULL, NULL, NULL, NULL,MSRorVBR);
+    AZ_reorder_vec(b,ndata_org,nupdate_index,NULL);
+
+
     AZ_solve(x,b, noptions, params,NULL,bindx,NULL,NULL,
              NULL,val, ndata_org, status, nproc_config);
+
+    AZ_invorder_vec(x,ndata_org,nupdate_index,0,b);
+
+    for (int i=0; i<=N_update-1; i++)
+        x[i] = b[i];
+
+    if (!AZ_FALSE)
+    {
+        AZ_free(nupdate_index);
+        AZ_free(nextern_index);
+        AZ_free(ndata_org);
+
+    }
 
     printf("solv done!\n");
 }

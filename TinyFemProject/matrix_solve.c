@@ -1,15 +1,15 @@
 #include "fem.h"
 #include "az_aztec.h"
 
-void matrsolv(Equat_Set Equa) {
+void matrsolv(Equat_Set* Equa) {
 
     //AZ_set_proc_config(AZ_set_proc_config, AZ_NOT_MPI);
 
-    int total_nontriaval = Equa.total_nontriaval;
-    int total_equations  = Equa.total_equations;
-    int *row_nontriaval  = Equa.row_nontriaval;
-    int **column_index   = Equa.column_index;
-    double **matrix      = Equa.matrix;
+    int total_nontriaval = Equa->total_nontriaval;
+    int total_equations  = Equa->total_equations;
+    int *row_nontriaval  = Equa->row_nontriaval;
+    int **column_index   = Equa->column_index;
+    double **matrix      = Equa->matrix;
 
     int    *bindx = (int   *)calloc(total_nontriaval+1, sizeof(int));
     double *val   = (double*)calloc(total_nontriaval+1, sizeof(double));
@@ -43,9 +43,9 @@ void matrsolv(Equat_Set Equa) {
     nontrivial_count += row_nontriaval[total_equations-1] - 1;
     bindx[total_equations] =  nontrivial_count + bindx[0];
 
-    for (int i = 0; i <total_nontriaval+1; i++) {
-        printf ("%d %le\n",bindx[i],val[i]);
-    }
+    //for (int i = 0; i <total_nontriaval+1; i++) {
+    //    printf ("%d %le\n",bindx[i],val[i]);
+    //}
 
     // 
     int N_update = total_equations;
@@ -56,7 +56,7 @@ void matrsolv(Equat_Set Equa) {
     double *b=(double *) calloc(N_update,sizeof(double));
     double *x=(double *) calloc(N_update,sizeof(double));
 
-    memcpy(b,Equa.vector,N_update*sizeof(double));
+    memcpy(b, Equa->vector, N_update*sizeof(double));
 
     int  noptions[AZ_OPTIONS_SIZE];
     double params[AZ_PARAMS_SIZE];
@@ -100,15 +100,13 @@ void matrsolv(Equat_Set Equa) {
 
     AZ_invorder_vec(x,ndata_org,nupdate_index,0,b);
 
-    for (int i=0; i<=N_update-1; i++)
-        x[i] = b[i];
+    memcpy(Equa->vector, x, N_update*sizeof(double));
 
     if (!AZ_FALSE)
     {
         AZ_free(nupdate_index);
         AZ_free(nextern_index);
         AZ_free(ndata_org);
-
     }
 
     printf("solv done!\n");

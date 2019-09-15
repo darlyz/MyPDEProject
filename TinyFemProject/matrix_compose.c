@@ -156,7 +156,7 @@ void matrcalc(
         clear_elem(&E_info, G_info.gaus_num);
     }
 
-    show_matr(*Equa);
+    //show_matr(*Equa);
     printf("Compose whole matrix done!\n");
 }
 

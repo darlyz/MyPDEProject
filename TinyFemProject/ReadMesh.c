@@ -437,5 +437,6 @@ void readmesh(
             }
         }
     }
+    fclose(ReadData);
     printf("Read mesh done!\n");
 }

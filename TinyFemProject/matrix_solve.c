@@ -5,30 +5,30 @@ void matrsolv(Equat_Set* Equa) {
 
     //AZ_set_proc_config(AZ_set_proc_config, AZ_NOT_MPI);
 
-    int total_nontriaval = Equa->total_nontriaval;
-    int total_equations  = Equa->total_equations;
-    int *row_nontriaval  = Equa->row_nontriaval;
-    int **column_index   = Equa->column_index;
-    double **matrix      = Equa->matrix;
+    int nZeroN    = Equa->nZeroN;
+    int equaN     = Equa->equaN;
+    int *row_nZN  = Equa->row_nZN;
+    int **clm_idx = Equa->clm_idx;
+    double **matrix = Equa->matrix;
 
-    int    *bindx = (int   *)calloc(total_nontriaval+1, sizeof(int));
-    double *val   = (double*)calloc(total_nontriaval+1, sizeof(double));
+    int    *bindx = (int   *)calloc(nZeroN+1, sizeof(int));
+    double *val   = (double*)calloc(nZeroN+1, sizeof(double));
 
     // convert matrix to MSR format
     int nontrivial_count = 0, temp_count = 0;
-    for (int eq_i=0; eq_i<total_equations; eq_i++) {
+    for (int eq_i=0; eq_i<equaN; eq_i++) {
 
         if (eq_i==0)
-            bindx[0] = total_equations + 1;
+            bindx[0] = equaN + 1;
         
         else {
-            nontrivial_count += row_nontriaval[eq_i-1] - 1;
+            nontrivial_count += row_nZN[eq_i-1] - 1;
             bindx[eq_i] = nontrivial_count + bindx[0];
         }
 
-        for (int clm_i=0; clm_i<row_nontriaval[eq_i]; clm_i++) {
+        for (int clm_i=0; clm_i<row_nZN[eq_i]; clm_i++) {
 
-            if (column_index[eq_i][clm_i] == eq_i + 1) {
+            if (clm_idx[eq_i][clm_i] == eq_i + 1) {
 
                 val[eq_i] = matrix[eq_i][clm_i];
                 continue;
@@ -36,19 +36,19 @@ void matrsolv(Equat_Set* Equa) {
 
             temp_count ++;
 
-            bindx[total_equations + temp_count] = column_index[eq_i][clm_i] - 1;
-            val  [total_equations + temp_count] = matrix      [eq_i][clm_i];
+            bindx[equaN + temp_count] = clm_idx[eq_i][clm_i] - 1;
+            val  [equaN + temp_count] = matrix      [eq_i][clm_i];
         }
     }
-    nontrivial_count += row_nontriaval[total_equations-1] - 1;
-    bindx[total_equations] =  nontrivial_count + bindx[0];
+    nontrivial_count += row_nZN[equaN-1] - 1;
+    bindx[equaN] =  nontrivial_count + bindx[0];
 
-    //for (int i = 0; i <total_nontriaval+1; i++) {
+    //for (int i = 0; i <nZeroN+1; i++) {
     //    printf ("%d %le\n",bindx[i],val[i]);
     //}
 
     // 
-    int N_update = total_equations;
+    int N_update = equaN;
     int *update  = (int*)malloc(N_update * sizeof(int));
     for (int i = 0; i < N_update; i++)
         update [i] = i;

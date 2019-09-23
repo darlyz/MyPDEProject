@@ -5,18 +5,18 @@
  All rights reserved
 */
 #include "fem.h"
-/*
+
 // used it in elemcalc.c
-void show_elem_stif(int node_cont, Elem_Matr E_matr) {
-	for (int i=0; i<node_cont*node_cont; i++)
+void show_elem_stif(int nodeN, Elem_Matr E_matr) {
+	for (int i=0; i<nodeN*nodeN; i++)
 	    printf("%e\n",E_matr.matr_0[i]);
     
-	for (int i=0; i<node_cont; i++)
+	for (int i=0; i<nodeN; i++)
 	    printf("%e\n",E_matr.righ_vect[i]);
 
 	printf("\n");
 }
-*/
+
 // used it in initial.c
 void show_adj(int* adj_nodn, int** adj_topo, int total_nodes) {
     for (int i=0; i<total_nodes; i++) {
@@ -47,36 +47,36 @@ void show_non_trivial(Equat_Set Equa) {
         printf("\n");
     }
 }
-/*
+
 // used it in matrcalc.c
 void show_elem(Elem_Info E_info, int elem_nodeN, int mate_varN, int gaus_num) {
 
-    int dim = E_info.global_dim;
+    int dim = E_info.l_dim;
 
-	printf("dim: %d\n",E_info.global_dim);
-	printf("node_cont: %d\n",E_info.node_cont);
+	printf("dim: %d\n",E_info.l_dim);
+	printf("nodeN: %d\n",E_info.nodeN);
 
-	printf("elem_node:\n");
+	printf("topo:\n");
 	for (int i=0; i<elem_nodeN; i++)
-		printf("%d ",E_info.elem_node[i]);
+		printf("%d ",E_info.topo[i]);
 	printf("\n");
 
-	printf("node_coor:\n");
-	for (int i=0; i<E_info.node_cont; i++){
+	printf("coor:\n");
+	for (int i=0; i<E_info.nodeN; i++){
 		for (int j=0; j<dim; j++)
-			printf("%e ",E_info.node_coor[j*E_info.node_cont+i]);
+			printf("%e ",E_info.coor[j*E_info.nodeN+i]);
 		printf("\n");
 	}
 
-	printf("elem_mate:\n");
+	printf("mate:\n");
 	for (int i=0; i<mate_varN; i++)
-		printf("%e ",E_info.elem_mate[i]);
+		printf("%e ",E_info.mate[i]);
 	printf("\n");
 
-	printf("refr_shap:\n");
+	printf("refr:\n");
 	for (int i=0; i<gaus_num; i++){
-		for (int j=0; j<E_info.node_cont*(dim+1); j++)
-			printf("%e ",E_info.refr_shap[i][j]);
+		for (int j=0; j<E_info.nodeN*(dim+1); j++)
+			printf("%e ",E_info.refr[i][j]);
 		printf("\n");
 	}
 }
@@ -107,7 +107,7 @@ void show_elem_matr(Elem_Matr E_matr, int ematr_size, Matr_Type *M_type) {
     for (int i=0; i<ematr_size; i++)
         printf("%e\n",E_matr.righ_vect[i]);
 }
-*/
+
 void show_coor(Coor_Info Coor) {
     printf("total nodes:%d, dim:%d\n",Coor.nodeN,Coor.dim);
     for (int i=0; i<Coor.nodeN; i++) {

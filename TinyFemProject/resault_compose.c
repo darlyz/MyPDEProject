@@ -1,12 +1,15 @@
 #include "fem.h"
 
-void result_compose( Equat_Set Equa, Dof_Tag ID, double* result, int total_nodes, int dof_num ) {
+void result_compose( Equat_Set Equa, Field_info Field, int total_nodes ) {
+
+    double *result  = Field.Res.result;
+    int     dof_num = Field.Res.dofN;
 
     for (int i=0; i<total_nodes; i++) {
 
         for (int j=0; j<dof_num; j++) {
 
-            int id_SN = Equa.node_equa_index[i][j];
+            int id_SN = Equa.dof_idx[i][j];
 
             if (id_SN > 0)
                 result[i*dof_num + j] = Equa.vector[id_SN - 1];

@@ -6,7 +6,7 @@
 */
 #include "fem.h"
 
-#define show_tag 1
+#define show_tag 0
 #define showFtag 0
 
 void clear_coor(Coor_Info *Coor) {

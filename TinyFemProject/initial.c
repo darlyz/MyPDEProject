@@ -15,19 +15,19 @@ void show_mesh_mate();
 void initial(
     Coor_Info   Coor,
     Node_Mesh   Mesh,
-    Field_info **Field,
+    Field_info *Field,
     Equat_Set   *Equa
 ){
-    int     node_dof =   (*Field)->Res.dofN;
-    double *result   =   (*Field)->Res.result;
-    Dof_Tag   *ID    = &((*Field)->ID);
-    Elem_Tag  *E_ID  = &((*Field)->E_ID);
-    Mesh_Mate *Emate = &((*Field)->Emate);
+    int     node_dof =   Field->Res.dofN;
+    double *result   =   Field->Res.result;
+    Dof_Tag   *ID    = &(Field->ID);
+    Elem_Tag  *E_ID  = &(Field->E_ID);
+    Mesh_Mate *Emate = &(Field->Emate);
 
     // ---------------------------------------- initial solution space ----------------------------------------
-    (*Field)->Res.result = (double *)calloc(Coor.nodeN*node_dof, sizeof(double));
+    Field->Res.result = (double *)calloc(Coor.nodeN*node_dof, sizeof(double));
     
-    result = (*Field)->Res.result;
+    result = Field->Res.result;
     
     for (int i=0; i<ID->nodeN; i++) {
 

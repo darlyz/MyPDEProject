@@ -1,6 +1,9 @@
 #include "fem.h"
 
-void write_result(Coor_Info Coor, Node_Mesh Mesh, double* result, int dof_num, char* mesh_file, char* resl_file) {
+void write_result(Coor_Info Coor, Node_Mesh Mesh, Field_info Field, char* mesh_file, char* resl_file) {
+
+    double *result  = Field.Res.result;
+    int     dof_num = Field.Res.dofN;
 
     FILE *WriteMesh;
     if((WriteMesh = fopen(mesh_file, "w")) == NULL) {
@@ -34,18 +37,18 @@ void write_result(Coor_Info Coor, Node_Mesh Mesh, double* result, int dof_num, c
             case P14: strcpy(elem_type, "Pyramid"); break;
         }
 
-        fprintf(WriteMesh,"Mesh \"%s\" Dimension %d Elemtype %s Nnode %d\n", "aeq4g2", Coor.dim, elem_type, Mesh.elem_nodeN[type_i]-1);
+        fprintf(WriteMesh,"Mesh \"%s\" Dimension %d Elemtype %s Nnode %d\n", "aeq4g2", Coor.dim, elem_type, Mesh.nodeN[type_i]-1);
         
         if (type_i == 0) {
 
             fprintf(WriteMesh,"Coordinates\n");
 
-            for (int i=0; i<Coor.total_nodes; i++) {
+            for (int i=0; i<Coor.nodeN; i++) {
 
                 fprintf(WriteMesh, "%d", i+1);
 
                 for (int j=0; j<Coor.dim; j++)
-                    fprintf(WriteMesh, " %le", Coor.coordinate[i*Coor.dim+j]);
+                    fprintf(WriteMesh, " %le", Coor.coor[i*Coor.dim+j]);
 
                 fprintf(WriteMesh, "\n");
             }
@@ -55,12 +58,12 @@ void write_result(Coor_Info Coor, Node_Mesh Mesh, double* result, int dof_num, c
 
         fprintf(WriteMesh, "Elements\n");
 
-        for (int i=0; i<Mesh.mesh_scale[type_i]; i++) {
+        for (int i=0; i<Mesh.scale[type_i]; i++) {
 
             fprintf(WriteMesh, "%d", i+1);
 
-            for (int j=0; j<Mesh.elem_nodeN[type_i]; j++)
-                fprintf(WriteMesh, " %d", Mesh.mesh_topo[type_i][i*Mesh.elem_nodeN[type_i] + j]);
+            for (int j=0; j<Mesh.nodeN[type_i]; j++)
+                fprintf(WriteMesh, " %d", Mesh.topo[type_i][i*Mesh.nodeN[type_i] + j]);
 
             fprintf(WriteMesh, "\n");
         }
@@ -94,7 +97,7 @@ void write_result(Coor_Info Coor, Node_Mesh Mesh, double* result, int dof_num, c
 
     fprintf(WriteMesh, "Values\n");
 
-    for (int i = 0; i <Coor.total_nodes; i++) {
+    for (int i = 0; i <Coor.nodeN; i++) {
 
         fprintf(WriteMesh, "%d", i+1);
 

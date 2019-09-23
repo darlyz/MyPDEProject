@@ -9,15 +9,15 @@
 void readmesh();
 void readmate();
 void initial ();
-//void matrcalc();
-//void matrsolv();
+void matrcalc();
+void matrsolv();
 void show_coor();
 void show_mesh();
 void show_material();
 void show_elem_tag();
 void show_mesh_mate();
-//void result_compose();
-//void write_result();
+void result_compose();
+void write_result();
 void clear_coor();
 void clear_mesh();
 void clear_field();
@@ -52,14 +52,16 @@ int main(int argc, char* argv[])
 
     Field_info *Field_A = (Field + 0);
 
-    initial ( Coor, Mesh, &Field_A, &Equa);
+    initial ( Coor, Mesh, Field_A, &Equa);
+
     //for (int i=0; i<Coor.nodeN; i++) printf("%le\n",Field_A->Res.result[i]);
     //for (int i=0; i<field_SN; i++) show_mesh_mate(Field[i].Emate);
-    //matrcalc( Coor,  Mesh,  Field, &Equa, 0);
+    
+    matrcalc( Coor,  Mesh,  Field_A, &Equa);
 
-    //matrsolv( &Equa );
-    //result_compose( Equa, Field[0], Coor.total_nodes);
-    //write_result( Coor, Mesh, Field, mesh_file, resl_file);
+    matrsolv( &Equa );
+    result_compose( Equa, *Field_A, Coor.nodeN);
+    write_result( Coor, Mesh, *Field_A, mesh_file, resl_file);
 
     clear_coor(&Coor);
     clear_mesh(&Mesh);

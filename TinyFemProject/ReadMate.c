@@ -1,29 +1,42 @@
+/*
+ Copyright: Copyright (c) 2019
+ Created: 2019-4-19
+ Author: Zhang_Licheng
+ All rights reserved
+*/
 #include "fem.h"
 
-void readmate(Materail *Mate, char* mat_file) {
+void readmate(Field_info **Field, int field_num, char* mat_file) {
     
     FILE *ReadMate;
     if((ReadMate = fopen(mat_file,"r"))==NULL) {
         printf("Read materials failed!\n");
         return;
     }
+    Materail *Mate;
 
-    fscanf(ReadMate, "%d", &(Mate->field_num));
-    Mate->mate_cont = (int*    )malloc(Mate->field_num * sizeof(int));
-    Mate->mate_varN = (int*    )malloc(Mate->field_num * sizeof(int));
-    Mate->mate      = (double**)malloc(Mate->field_num * sizeof(double*));
-    
-    for (int field_i=0; field_i<Mate->field_num; field_i++) {
+    int local_field_num;
+    fscanf(ReadMate, "%d", &(local_field_num));
 
-        fscanf(ReadMate, "%d", &(Mate->mate_cont[field_i]));
-        fscanf(ReadMate, "%d", &(Mate->mate_varN[field_i]));
-
-        Mate->mate[field_i] = (double*)malloc(Mate->mate_cont[field_i] * Mate->mate_varN[field_i] * sizeof(double));
-
-        for (int mat_i=0; mat_i< Mate->mate_cont[field_i]; mat_i++)
-            for (int var_i; var_i<Mate->mate_varN[field_i]; var_i++)
-                fscanf(ReadMate, "%le", &(Mate->mate[field_i][mat_i * (Mate->mate_varN[field_i]) + var_i]));
+    if (local_field_num != field_num) {
+        printf("field number mismatched!\n");
+        return;
     }
 
+    for (int i=0; i<local_field_num; i++) {
+
+        Mate = &((*Field)[i].Mate);
+
+        fscanf(ReadMate, "%d", &(Mate->mateN));
+        fscanf(ReadMate, "%d", &(Mate->varN));
+
+        Mate->mate = (double*)malloc(Mate->mateN * Mate->varN * sizeof(double));
+
+        for (int mat_i=0; mat_i<Mate->mateN; mat_i++)
+            for (int var_i=0; var_i<Mate->varN; var_i++)
+                fscanf(ReadMate, "%le", &(Mate->mate[mat_i * (Mate->varN) + var_i]));
+    }
+
+    fclose(ReadMate);
     printf("Read materials done!\n");
 }

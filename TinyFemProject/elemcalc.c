@@ -33,21 +33,21 @@ void elemcalc (
 	double refr_coor[3];
 	double jacb_matr[9];
 	double invt_jacb[9];
-	double real_shap[E_info.node_cont*(E_info.dim+1)];
+	double real_shap[E_info.node_cont*(E_info.global_dim+1)];
 
     for (int gaus_i = 1; gaus_i <= G_info.gaus_num; gaus_i ++)
     {
-        for (int i=1;i<=E_info.dim;i++)
+        for (int i=1;i<=E_info.global_dim;i++)
 		{
             refr_coor[i-1] = G_info.gaus_coor[(i-1)*G_info.gaus_num + gaus_i-1];
 			real_coor[i-1] = 0.;
-			for (int j=1;j<=E_info.dim;j++)
-				jacb_matr[(i-1)*E_info.dim+j-1]=0.;
+			for (int j=1;j<=E_info.global_dim;j++)
+				jacb_matr[(i-1)*E_info.global_dim+j-1]=0.;
 		}
 
-        double det = transe_coor(real_coor, refr_coor, E_info.node_coor, jacb_matr, E_info.dim, E_info.node_cont);
+        double det = transe_coor(real_coor, refr_coor, E_info.node_coor, jacb_matr, E_info.global_dim, E_info.node_cont);
 
-        double invt_det = inv(invt_jacb, jacb_matr, E_info.dim);
+        double invt_det = inv(invt_jacb, jacb_matr, E_info.global_dim);
 
         x  = real_coor[0];
         y  = real_coor[1];
@@ -56,16 +56,16 @@ void elemcalc (
         ry = refr_coor[1];
 
 		double weight = det*G_info.gaus_weig[gaus_i-1];
-		calc_real_shap(E_info.dim, E_info.node_cont, E_info.refr_shap[gaus_i-1], real_shap, invt_jacb);
+		calc_real_shap(E_info.global_dim, E_info.node_cont, E_info.refr_shap[gaus_i-1], real_shap, invt_jacb);
 
 		for (int i=1; i<=E_info.node_cont; ++i)
-            u[i-1]  = +real_shap[(i-1)*(E_info.dim+1)+1-1];
+            u[i-1]  = +real_shap[(i-1)*(E_info.global_dim+1)+1-1];
 
 		for (int i=1; i<=E_info.node_cont; ++i)
-            ux[i-1] = +real_shap[(i-1)*(E_info.dim+1)+2-1];
+            ux[i-1] = +real_shap[(i-1)*(E_info.global_dim+1)+2-1];
 
         for (int i=1; i<=E_info.node_cont; ++i)
-            uy[i-1] = +real_shap[(i-1)*(E_info.dim+1)+3-1];
+            uy[i-1] = +real_shap[(i-1)*(E_info.global_dim+1)+3-1];
 
 		// stiffness calculation
 		for (int i=1; i<=E_info.node_cont; ++i)

@@ -24,19 +24,22 @@ int  traversal_search_();
 void matrcalc(
     Coor_Info  Coor,
     Node_Mesh  Mesh,
-	Dof_Tag    ID,
+    Field_info *Field,
 	Equat_Set* Equa,
-    Materail   Mate,
-    double *result,
-    int node_dof
+    int Field_i
 ){
+
+    int node_dof    =   Field[Field_i].dof_num;
+    Materail  *Mate = &(Field[Field_i].Mate);
+    Mesh_Mate *M_SN = &(Field[Field_i].M_SN);
+    double *result  =   Field[Field_i].result;
 
     int pre_node = 0;
     for (int type_i=1; type_i<=Mesh.typeN; type_i++)
     {
         int elem_nodeN = Mesh.elem_nodeN[type_i-1];
         int mesh_scale = Mesh.mesh_scale[type_i-1];
-        int ematr_size = node_dof*(elem_nodeN-1);
+        int ematr_size = node_dof*elem_nodeN;
 
         Matr_Type M_type[4]={dist,lump,lump,lump};
 		
@@ -46,31 +49,40 @@ void matrcalc(
 		
 		set_gaus(&G_info);
 		set_matr(&E_matr, ematr_size, M_type);
-		set_elem(&E_info, Coor.dim, elem_nodeN, Mate.mate_varN[0], G_info.gaus_num);
-        set_refr_shap(E_info.refr_shap, G_info.gaus_coor, G_info.gaus_num, E_info.node_cont, E_info.dim);
+		set_elem(&E_info, Coor.dim, elem_nodeN, Mate->mate_varN, G_info.gaus_num);
+        set_refr_shap(E_info.refr_shap, G_info.gaus_coor, G_info.gaus_num, E_info.node_cont, E_info.global_dim);
 
         for (int elem_i=1; elem_i<=mesh_scale; elem_i++)
         {
 
-            memcpy(E_info.elem_node, &Mesh.mesh_topo[type_i-1][(elem_i-1)*elem_nodeN], elem_nodeN*sizeof(int));
+            memcpy(E_info.elem_node,
+                  &Mesh.mesh_topo[type_i-1][(elem_i-1)*elem_nodeN],
+                   elem_nodeN*sizeof(int));
 
-            if (E_info.elem_node[E_info.node_cont] <= 0)
+            E_info.mate_SN = M_SN->mesh_mateSN[type_i-1][elem_i-1];
+
+            if (E_info.mate_SN <= 0)
                 continue;
 
-			memcpy(E_info.elem_mate, &Mate.mate[0][E_info.elem_node[E_info.node_cont]-1], Mate.mate_varN[0]*sizeof(double));
+			memcpy(E_info.elem_mate,
+                 &(Mate->mate[(E_info.mate_SN-1)*Mate->mate_varN]),
+                   Mate->mate_varN*sizeof(double));
 
-			for (int node_i=1; node_i<elem_nodeN; node_i++) {
-                for (int dim_i=1; dim_i<=E_info.dim; dim_i++)
+            for (int i = 0; i<Mate->mate_varN; i++)
+                printf("111111   %lf\n",E_info.elem_mate[i]);
 
-                    E_info.node_coor[(dim_i-1)*(elem_nodeN-1)+node_i-1] = 
-                    Coor.coordinate[(E_info.elem_node[node_i-1]-1)*E_info.dim + dim_i-1];
+			for (int node_i=1; node_i<=elem_nodeN; node_i++) {
+                for (int dim_i=1; dim_i<=E_info.global_dim; dim_i++)
+
+                    E_info.node_coor[(dim_i-1)*elem_nodeN + node_i-1] = 
+                    Coor.coordinate[(E_info.elem_node[node_i-1]-1)*E_info.global_dim + dim_i-1];
             }
             
             reset_matr(&E_matr, ematr_size, M_type);
 
 			elemcalc(elem_i, G_info, E_info, &E_matr);
 
-            //show_elem(E_info, elem_nodeN, Mate.mate_varN, G_info.gaus_num);
+            //show_elem(E_info, elem_nodeN, Mate->mate_varN, G_info.gaus_num);
             //show_elem_stif(E_info.node_cont, E_matr);
             //show_elem_matr(E_matr, ematr_size, M_type);
 
@@ -87,7 +99,7 @@ void matrcalc(
             }
 
             // construct total left matrix and right vector
-            for (int nod_i=0; nod_i<elem_nodeN-1; nod_i++) {
+            for (int nod_i=0; nod_i<elem_nodeN; nod_i++) {
                 
                 int nodi_SN = E_info.elem_node[nod_i];
 
@@ -112,7 +124,7 @@ void matrcalc(
 
                     int idx = 0;
 
-                    for (int nod_j=0; nod_j<elem_nodeN-1; nod_j++) {
+                    for (int nod_j=0; nod_j<elem_nodeN; nod_j++) {
 
                         int nodj_SN = E_info.elem_node[nod_j];
 
@@ -203,16 +215,16 @@ void clear_matr(Elem_Matr* E_matr)
 
 void set_elem(Elem_Info *E_info, int dim, int elem_nodeN, int mate_varN, int gaus_num)
 {
-	E_info->dim = dim;
-	E_info->node_cont  = elem_nodeN - 1;
+	E_info->global_dim = dim;
+	E_info->node_cont  = elem_nodeN;
 	
 	E_info->elem_node = (int*    )malloc(elem_nodeN * sizeof(int));
-	E_info->node_coor = (double* )malloc(E_info->node_cont * E_info->dim * sizeof(double));
+	E_info->node_coor = (double* )malloc(E_info->node_cont * E_info->global_dim * sizeof(double));
 	//E_info->coup_valu = (double*)malloc(E_info->node_cont * coupN * sizeof(double));
 	E_info->elem_mate = (double* )malloc(mate_varN * sizeof(double));
-	E_info->refr_shap = (double**)malloc(gaus_num * sizeof(double*));
+	E_info->refr_shap = (double**)malloc(gaus_num  * sizeof(double*));
 	for (int gaus_i=1; gaus_i<=gaus_num; gaus_i++)
-		E_info->refr_shap[gaus_i-1] = (double*)malloc(E_info->node_cont * (E_info->dim+1) * sizeof(double));
+		E_info->refr_shap[gaus_i-1] = (double*)malloc(E_info->node_cont * (E_info->global_dim+1) * sizeof(double));
 }
 
 void clear_elem(Elem_Info *E_info, int gaus_num)

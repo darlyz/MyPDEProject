@@ -1,5 +1,11 @@
+/*
+ Copyright: Copyright (c) 2019
+ Created: 2019-4-19
+ Author: Zhang_Licheng
+ All rights reserved
+*/
 #include "fem.h"
-
+/*
 // used it in elemcalc.c
 void show_elem_stif(int node_cont, Elem_Matr E_matr) {
 	for (int i=0; i<node_cont*node_cont; i++)
@@ -10,7 +16,7 @@ void show_elem_stif(int node_cont, Elem_Matr E_matr) {
 
 	printf("\n");
 }
-
+*/
 // used it in initial.c
 void show_adj(int* adj_nodn, int** adj_topo, int total_nodes) {
     for (int i=0; i<total_nodes; i++) {
@@ -23,31 +29,31 @@ void show_adj(int* adj_nodn, int** adj_topo, int total_nodes) {
 
 // used it in initial.c
 void show_node_eq_index(Equat_Set Equa, int total_nodes, int node_dof) {
-    printf("total_equations = %d\n",Equa.total_equations);
+    printf("equaN = %d\n",Equa.equaN);
     for (int i=0; i<total_nodes; i++) {
         for (int j=0; j<node_dof; j++)
-            printf("\t%d",Equa.node_equa_index[i][j]);
+            printf("\t%d",Equa.dof_idx[i][j]);
         printf("\n");
     }
 }
 
 // used it in initial.c
 void show_non_trivial(Equat_Set Equa) {
-    printf("non triaval: %d\n",Equa.total_nontriaval);
-    for (int i=0; i<Equa.total_equations; i++) {
+    printf("non triaval: %d\n",Equa.nZeroN);
+    for (int i=0; i<Equa.equaN; i++) {
         printf("%d, ",i+1);
-        for (int j=0; j<Equa.row_nontriaval[i]; j++)
-            printf("%d ",Equa.column_index[i][j]);
+        for (int j=0; j<Equa.row_nZN[i]; j++)
+            printf("%d ",Equa.clm_idx[i][j]);
         printf("\n");
     }
 }
-
+/*
 // used it in matrcalc.c
 void show_elem(Elem_Info E_info, int elem_nodeN, int mate_varN, int gaus_num) {
 
-    int dim = E_info.dim;
+    int dim = E_info.global_dim;
 
-	printf("dim: %d\n",E_info.dim);
+	printf("dim: %d\n",E_info.global_dim);
 	printf("node_cont: %d\n",E_info.node_cont);
 
 	printf("elem_node:\n");
@@ -77,10 +83,10 @@ void show_elem(Elem_Info E_info, int elem_nodeN, int mate_varN, int gaus_num) {
 
 // used it in matrcalc.c
 void show_matr(Equat_Set Equa) {
-    for (int i=0; i<Equa.total_equations; i++){
+    for (int i=0; i<Equa.equaN; i++){
         printf("%d: ",i+1);
-        for (int j=0; j<Equa.row_nontriaval[i]; j++)
-            printf("%d,%e ",Equa.column_index[i][j],Equa.matrix[i][j]);
+        for (int j=0; j<Equa.row_nZN[i]; j++)
+            printf("%d,%e ",Equa.clm_idx[i][j],Equa.matrix[i][j]);
         printf("-->%e\n",Equa.vector[i]);
     }
 }
@@ -101,16 +107,59 @@ void show_elem_matr(Elem_Matr E_matr, int ematr_size, Matr_Type *M_type) {
     for (int i=0; i<ematr_size; i++)
         printf("%e\n",E_matr.righ_vect[i]);
 }
+*/
+void show_coor(Coor_Info Coor) {
+    printf("total nodes:%d, dim:%d\n",Coor.nodeN,Coor.dim);
+    for (int i=0; i<Coor.nodeN; i++) {
+        for (int j=0; j<Coor.dim; j++)
+            printf("%le ",Coor.coor[i*Coor.dim + j]);
+        printf("\n");
+    }
+}
 
 void show_mesh(Node_Mesh Mesh) {
     for (int i=0; i<Mesh.typeN; i++) {
         printf("type_i=%d\n",i+1);
-        for(int j=0; j<Mesh.mesh_scale[i];j++) {
+        printf("type = %d\n",Mesh.type[i]);
+        printf("%d elems, %d nodes per elem\n",Mesh.scale[i], Mesh.nodeN[i]);
+        for(int j=0; j<Mesh.scale[i];j++) {
             printf("elem_i=%d: ",j+1);
-            for (int k=0; k<Mesh.elem_nodeN[i];k++)
-                printf("%d ",Mesh.mesh_topo[i][j*Mesh.elem_nodeN[i]+k]);
+            for (int k=0; k<Mesh.nodeN[i];k++)
+                printf("%d ",Mesh.topo[i][j*Mesh.nodeN[i]+k]);
             printf("\n");
         }
+        printf("\n");
+    }
+}
+
+void show_elem_tag(Elem_Tag E_ID) {
+    for (int i=0; i<E_ID.typeN; i++) {
+        printf("type=%d\n",E_ID.type[i]);
+        for (int j=0; j<E_ID.elemN[i]; j++) {
+            printf("%d %d\n", E_ID.elemSN[i][j], E_ID.elemID[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void show_material(Field_info *Field, int field_SN) {
+    for (int i = 0; i <field_SN; i++){
+        printf("%d %d\n", Field[i].Mate.mateN, Field[i].Mate.varN);
+        for (int j = 0; j <Field[i].Mate.mateN; j++) {
+            for (int k = 0; k <Field[i].Mate.varN; k++)
+                printf("%le ", Field[i].Mate.mate[j*Field[i].Mate.varN+k]);
+            printf("\n");
+        }
+        printf("\n");
+    }
+}
+
+void show_mesh_mate(Mesh_Mate Emate) {
+    printf("\n%d mesh type\n", Emate.typeN);
+    for (int i = 0; i < Emate.typeN; i++) {
+        printf("type_i=%d\n",i+1);
+        for (int j = 0; j < Emate.scale[i]; j++)
+            printf("%d ",Emate.elemID[i][j]);
         printf("\n");
     }
 }

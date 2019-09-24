@@ -76,12 +76,12 @@ void elemcalc (
 				E_matr->matr_0[(i-1)*E_info.nodeN + j-1] += tempvar*weight;
 			}
 
-		for (int i=1; i<=E_info.nodeN; ++i)
-			for (int j=1; j<=E_info.nodeN; ++j)
-			{
-				tempvar = u[i-1]*u[j-1];
-				E_matr->matr_0[(i-1)*E_info.nodeN + j-1] += tempvar*weight;
-			}
+		//for (int i=1; i<=E_info.nodeN; ++i)
+		//	for (int j=1; j<=E_info.nodeN; ++j)
+		//	{
+		//		tempvar = u[i-1]*u[j-1];
+		//		E_matr->matr_0[(i-1)*E_info.nodeN + j-1] += tempvar*weight;
+		//	}
 		
 		// loadvector calculation
 		for (int i=1; i<=E_info.nodeN; ++i)

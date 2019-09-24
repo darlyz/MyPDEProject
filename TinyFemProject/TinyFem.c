@@ -9,7 +9,7 @@
 void readmesh();
 void readmate();
 void initial ();
-void matrcalc();
+void matrix_compose();
 void matrsolv();
 void show_coor();
 void show_mesh();
@@ -34,15 +34,14 @@ int main(int argc, char* argv[])
     Node_Mesh Mesh;
 
     Field_info *Field = (Field_info*)malloc(5*sizeof(Field_info));
-    Field[0].Res.dofN = 1;
 
     Equat_Set Equa;
 
     int field_SN = 0;
 
-    readmesh( &Coor, &Mesh, &Field, &field_SN, data_file );
+    readmesh( &Coor, &Mesh, Field, &field_SN, data_file );
 
-    readmate( &Field, field_SN, mate_file);
+    readmate( Field, field_SN, mate_file );
     
     //show_coor(Coor);
     //show_mesh(Mesh);
@@ -51,19 +50,23 @@ int main(int argc, char* argv[])
     //Mesh.typeN = 1;
 
     Field_info *Field_A = (Field + 0);
+    Field_A->Res.nodeN = Coor.nodeN;
+    Field_A->Res.dofN  = 1;
 
-    initial ( Coor, Mesh, Field_A, &Equa);
+    initial ( Coor, Mesh, Field_A, &Equa );
 
     //for (int i=0; i<Coor.nodeN; i++) printf("%le\n",Field_A->Res.result[i]);
     //for (int i=0; i<field_SN; i++) show_mesh_mate(Field[i].Emate);
     
-    matrcalc( Coor,  Mesh,  Field_A, &Equa);
+    matrix_compose( Coor, Mesh, Field_A, &Equa );
 
     matrsolv( &Equa );
-    result_compose( Equa, *Field_A, Coor.nodeN);
-    write_result( Coor, Mesh, *Field_A, mesh_file, resl_file);
 
-    clear_coor(&Coor);
-    clear_mesh(&Mesh);
-    clear_field(&Field, field_SN);
+    result_compose( Equa, *Field_A, Coor.nodeN );
+
+    write_result( Coor, Mesh, *Field_A, mesh_file, resl_file );
+
+    clear_coor( &Coor );
+    clear_mesh( &Mesh );
+    clear_field( &Field, field_SN );
 }

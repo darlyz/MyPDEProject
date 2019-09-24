@@ -6,7 +6,7 @@
 */
 #include "fem.h"
 
-void readmate(Field_info **Field, int field_num, char* mat_file) {
+void readmate(Field_info *Field, int field_num, char* mat_file) {
     
     FILE *ReadMate;
     if((ReadMate = fopen(mat_file,"r"))==NULL) {
@@ -25,7 +25,7 @@ void readmate(Field_info **Field, int field_num, char* mat_file) {
 
     for (int i=0; i<local_field_num; i++) {
 
-        Mate = &((*Field)[i].Mate);
+        Mate = &(Field[i].Mate);
 
         fscanf(ReadMate, "%d", &(Mate->mateN));
         fscanf(ReadMate, "%d", &(Mate->varN));

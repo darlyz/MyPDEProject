@@ -143,7 +143,7 @@ void initial(
     Equa->row_nZN = (int* )malloc(Equa->equaN * sizeof(int));
     Equa->clm_idx = (int**)malloc(Equa->equaN * sizeof(int*));
     Equa->matrix  = (double**)malloc(Equa->equaN * sizeof(double*));
-    Equa->vector  = (double* )malloc(Equa->equaN * sizeof(double));
+    Equa->vector  = (double* )calloc(Equa->equaN , sizeof(double));
 
     for (int i=0; i<Coor.nodeN; i++)
         for (int j=0; j<node_dof; j++) {

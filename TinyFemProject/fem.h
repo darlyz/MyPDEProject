@@ -49,7 +49,7 @@ typedef struct Init_Data
 {
     int dofN;                       // dof number a node has
     int nodeN;                      // total nodes count
-    int order;                       // time derivatives order
+    int order;                      // time derivatives order
     double *init_0;                 // value of initial displacement
     double *init_1;                 // value of initial velocity
     double *init_2;                 // value of initial acceleration
@@ -81,8 +81,8 @@ typedef struct Mesh_Mate
 typedef struct Result
 {
     int dofN;                       //
-    int nodeN; //
-    double *result; //
+    int nodeN;                      //
+    double *result;                 //
 }Result;
 
 typedef struct Field_info

@@ -52,7 +52,7 @@ void set_refr_shap(double** refr_shap, double* gaus_coor, int gaus_num, int node
     {
 		for (int i = 1; i <= dim; i ++)
             refr_coor[i-1] = gaus_coor[(i-1)*gaus_num + gaus_i-1];
-		calc_refr_shap( refr_shap[gaus_i-1], refr_coor, node_cont, dim);
+		calc_refr_shap( refr_shap[gaus_i-1], refr_coor, node_cont, dim );
 	}
 }
 

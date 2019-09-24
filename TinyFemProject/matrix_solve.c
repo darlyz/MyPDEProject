@@ -37,7 +37,7 @@ void matrsolv(Equat_Set* Equa) {
             temp_count ++;
 
             bindx[equaN + temp_count] = clm_idx[eq_i][clm_i] - 1;
-            val  [equaN + temp_count] = matrix      [eq_i][clm_i];
+            val  [equaN + temp_count] = matrix [eq_i][clm_i];
         }
     }
     nontrivial_count += row_nZN[equaN-1] - 1;
@@ -53,10 +53,11 @@ void matrsolv(Equat_Set* Equa) {
     for (int i = 0; i < N_update; i++)
         update [i] = i;
 
-    double *b=(double *) calloc(N_update,sizeof(double));
+    //double *b=(double *) calloc(N_update,sizeof(double));
     double *x=(double *) calloc(N_update,sizeof(double));
 
-    memcpy(b, Equa->vector, N_update*sizeof(double));
+    //memcpy(b, Equa->vector, N_update*sizeof(double));
+    double *b = Equa->vector;
 
     int  noptions[AZ_OPTIONS_SIZE];
     double params[AZ_PARAMS_SIZE];
@@ -106,8 +107,14 @@ void matrsolv(Equat_Set* Equa) {
     {
         AZ_free(nupdate_index);
         AZ_free(nextern_index);
+        AZ_free(nexternal);
         AZ_free(ndata_org);
     }
+
+    free(bindx );
+    free(val   );
+    free(update);
+    free(x     );
 
     printf("solv done!\n");
 }

@@ -21,7 +21,7 @@ void show_elem_stif();
 int  Binary_Search_();
 int  traversal_search_();
 
-void matrcalc(
+void matrix_compose(
     Coor_Info  Coor,
     Node_Mesh  Mesh,
     Field_info *Field,
@@ -34,13 +34,13 @@ void matrcalc(
     Mesh_Mate *Emate = &(Field->Emate);
     double  *result  =   Field->Res.result;
 
-    int pre_node = 0;
     for (int type_i=1; type_i<=Mesh.typeN; type_i++)
     {
         int elem_nodeN = Mesh.nodeN[type_i-1];
         int mesh_scale = Mesh.scale[type_i-1];
         int ematr_size = node_dof*elem_nodeN;
 
+        // to set
         Matr_Type M_type[4]={dist,lump,lump,lump};
 		
 		Gaus_Info G_info;
@@ -165,7 +165,7 @@ void matrcalc(
         clear_elem(&E_info, G_info.gausN);
     }
 
-    show_matr(*Equa);
+    //show_matr(*Equa);
     printf("Compose whole matrix done!\n");
 }
 
@@ -199,7 +199,6 @@ void reset_matr(Elem_Matr* E_matr, int elem_dof, Matr_Type *M_type)
     memset(E_matr->righ_vect , 0, elem_dof         *sizeof(double));
 }
 
-    
 void clear_matr(Elem_Matr* E_matr)
 {
     free(E_matr->matr_0);
@@ -213,13 +212,13 @@ void clear_matr(Elem_Matr* E_matr)
 void set_elem(Elem_Info *E_info, int dim, int elem_nodeN, int varN, int gausN)
 {
 	E_info->g_dim = dim;
-	E_info->nodeN  = elem_nodeN;
+	E_info->nodeN = elem_nodeN;
 	
-	E_info->topo = (int*    )malloc(elem_nodeN * sizeof(int));
+	E_info->topo = (int*    )malloc(E_info->nodeN * sizeof(int));
 	E_info->coor = (double* )malloc(E_info->nodeN * E_info->g_dim * sizeof(double));
 	//E_info->coup_valu = (double*)malloc(E_info->nodeN * coupN * sizeof(double));
-	E_info->mate = (double* )malloc(varN * sizeof(double));
-	E_info->refr = (double**)malloc(gausN  * sizeof(double*));
+	E_info->mate = (double* )malloc(varN  * sizeof(double));
+	E_info->refr = (double**)malloc(gausN * sizeof(double*));
 	for (int gaus_i=1; gaus_i<=gausN; gaus_i++)
 		E_info->refr[gaus_i-1] = (double*)malloc(E_info->nodeN * (E_info->g_dim+1) * sizeof(double));
 }

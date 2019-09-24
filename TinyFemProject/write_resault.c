@@ -37,7 +37,7 @@ void write_result(Coor_Info Coor, Node_Mesh Mesh, Field_info Field, char* mesh_f
             case P14: strcpy(elem_type, "Pyramid"); break;
         }
 
-        fprintf(WriteMesh,"Mesh \"%s\" Dimension %d Elemtype %s Nnode %d\n", "aeq4g2", Coor.dim, elem_type, Mesh.nodeN[type_i]-1);
+        fprintf(WriteMesh,"Mesh \"%s\" Dimension %d Elemtype %s Nnode %d\n", "aeq4g2", Coor.dim, elem_type, Mesh.nodeN[type_i]);
         
         if (type_i == 0) {
 

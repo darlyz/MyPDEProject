@@ -7,12 +7,13 @@
 */
 #include "fem.h"
 
-int assign_mesh_type();
+int  assign_mesh_type();
+void assign_local_dim();
 
 void readmesh(
     Coor_Info   *Coor,
     Node_Mesh   *Mesh,
-    Field_info **Field,
+    Field_info  *Field,
     int         *field_SN,
     char        *dat_file
 ){
@@ -62,9 +63,9 @@ void readmesh(
         else if (strncmp(temp_str,"-field-", 4) == 0) {
             dataparagh = field;
             (*field_SN) ++;
-            ID   = &((*Field)[*field_SN-1].ID);
-            Init = &((*Field)[*field_SN-1].Init);
-            E_ID = &((*Field)[*field_SN-1].E_ID);
+            ID   = &(Field[*field_SN-1].ID);
+            Init = &(Field[*field_SN-1].Init);
+            E_ID = &(Field[*field_SN-1].E_ID);
 
             Init->order  = 0;
             E_ID->typeN  = 0;
@@ -142,6 +143,7 @@ void readmesh(
             if (line_count == 1) {
                 if ( assign_mesh_type(temp_str, Mesh->type, Mesh->typeN-1) )
                     return;
+                assign_local_dim(Mesh->type[Mesh->typeN-1], &(Mesh->l_dim[Mesh->typeN-1]));
             }
 
             else if (line_count == 2) {
@@ -507,4 +509,29 @@ int assign_mesh_type(char* type_str, Mesh_Type *Mtype, int type_i) {
     }
 
     return 0;
+}
+
+void assign_local_dim(Mesh_Type type, int *l_dim) {
+    switch (type) {
+        case P1 : *l_dim = 0; break;
+        case L2 : *l_dim = 1; break;
+        case L3 : *l_dim = 1; break;
+        case T3 : *l_dim = 2; break;
+        case T6 : *l_dim = 2; break;
+        case Q4 : *l_dim = 2; break;
+        case Q8 : *l_dim = 2; break;
+        case Q9 : *l_dim = 2; break;
+        case W4 : *l_dim = 3; break;
+        case W10: *l_dim = 3; break;
+        case C8 : *l_dim = 3; break;
+        case C20: *l_dim = 3; break;
+        case C27: *l_dim = 3; break;
+        case H6 : *l_dim = 3; break;
+        case H15: *l_dim = 3; break;
+        case H18: *l_dim = 3; break;
+        case P5 : *l_dim = 3; break;
+        case P13: *l_dim = 3; break;
+        case P14: *l_dim = 3; break;
+        default:  *l_dim = 0; break;
+    }
 }

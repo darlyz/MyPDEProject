@@ -7,6 +7,8 @@
 */
 #include "fem.h"
 
+#define show_tag 0
+
 int  assign_mesh_type();
 void assign_local_dim();
 
@@ -17,10 +19,10 @@ void readmesh(
     int         *field_SN,
     char        *dat_file
 ){
-    char   temp_char;
     char   temp_str[255];
-    int    temp_int;
-    double temp_double;
+    //char   temp_char;
+    //int    temp_int;
+    //double temp_double;
 
     FILE *ReadData;
     if((ReadData=fopen(dat_file,"r"))==NULL) {
@@ -28,7 +30,7 @@ void readmesh(
         return;
     }
 
-    typedef enum{coor, mesh, field, id, value, init, mate} paragh;
+    typedef enum{coor = 1, mesh, field, id, value, init, mate} paragh;
     paragh dataparagh;
     int line_count = 0;
 
@@ -136,6 +138,8 @@ void readmesh(
                     }
                 }
             }
+
+            if (show_tag && (line_count == Coor->nodeN + 2) ) printf("Read coor end.\n");
         }
 
         else if (dataparagh == mesh) {
@@ -181,6 +185,8 @@ void readmesh(
                     }
                 }
             }
+
+            if (show_tag && (line_count == Mesh->scale[Mesh->typeN-1] + 3) ) printf("Read mesh end.\n");
         }
 
         else if (dataparagh == id) {
@@ -256,6 +262,8 @@ void readmesh(
                     }
                 }
             }
+
+            if (show_tag && (line_count == ID->nodeN + 2) ) printf("Read constraint end.\n");
         }
 
         else if (dataparagh == init) {
@@ -263,14 +271,14 @@ void readmesh(
             if (line_count == 1) {
 
                 switch(Init->order) {
-                    case 0:
+                    case 1:
                         sscanf(temp_str, "%d %d", &Init->nodeN, &Init->dofN);
                         Init->init_0 = (double*)malloc(Init->nodeN*Init->dofN*sizeof(double));
                         break;
-                    case 1:
+                    case 2:
                         Init->init_1 = (double*)malloc(Init->nodeN*Init->dofN*sizeof(double));
                         break;
-                    case 2:
+                    case 3:
                         Init->init_2 = (double*)malloc(Init->nodeN*Init->dofN*sizeof(double));
                         break;
                 }
@@ -317,6 +325,8 @@ void readmesh(
                     }
                 }
             }
+
+            if (show_tag && (line_count == Init->nodeN + 2) ) printf("Read order %d initial data end.\n", Init->order);
         }
 
         else if (dataparagh == mate) {
@@ -338,6 +348,8 @@ void readmesh(
                 sscanf(temp_str, "%d %d", &E_ID->elemSN[E_ID->typeN-1][line_count-3] ,
                                           &E_ID->elemID[E_ID->typeN-1][line_count-3]);
             }
+
+            if (show_tag && (line_count == E_ID->elemN[E_ID->typeN-1] + 3) ) printf("Read mesh material tag end.\n");
         }
     }
     fclose(ReadData);

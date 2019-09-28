@@ -67,7 +67,6 @@ int Binary_Search(int* dest, int dest_len, int key) {
     int idx_start = 0;
     int idx_end   = dest_len-1;
     int idx_mid   = -1;
-    int insert    = 0;
 
     if (dest_len == 0)
         return 0;
@@ -102,7 +101,6 @@ int Binary_Search_(int* dest, int dest_len, int key) {
     int idx_start = 0;
     int idx_end   = dest_len-1;
     int idx_mid   = -1;
-    int insert    = 0;
 
     if (dest_len == 0)
         return -1;

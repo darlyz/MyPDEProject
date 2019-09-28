@@ -68,7 +68,7 @@ void matrsolv(Equat_Set* Equa) {
     params  [AZ_tol      ] = 1e-8;
     //params  [Az_dropout  ] = 0.  ;
     params  [AZ_omega    ] = 1.  ;
-    noptions[AZ_max_iter ] = 1000;
+    noptions[AZ_max_iter ] = 3000;
     noptions[AZ_solver   ] = AZ_bicgstab ;
     noptions[AZ_precond  ] = AZ_ls ;
     noptions[AZ_poly_ord ] = 7 ;

@@ -6,7 +6,7 @@
 */
 #include "fem.h"
 
-#define show_tag 0
+#define show_tag 1
 #define showFtag 0
 
 void clear_coor(Coor_Info *Coor) {
@@ -39,7 +39,7 @@ void clear_ID(Dof_Tag *ID) {
 }
 
 void clear_init(Init_Data *Init) {
-    if (Init->order == 0) { return; }
+    if (Init->order == 0 || Init->nodeN == 0) { return; }
     if (Init->order >  0) { free(Init->init_0); }
     if (Init->order >  1) { free(Init->init_1); }
     if (Init->order >  2) { free(Init->init_2); }
@@ -90,13 +90,13 @@ void clear_result(Result *Res) {
         printf("Result cleared.\n");
 }
 
-void clear_field(Field_info **Field, int Field_num) {
+void clear_field(Field_info *Field, int Field_num) {
     for (int i = 0; i < Field_num; i++) {
-        clear_ID     (&((*Field)[i].ID   )); if (show_tag) printf("Field %d ID     cleared.\n",  i+1);
-        clear_init   (&((*Field)[i].Init )); if (show_tag) printf("Field %d Init   cleared.\n",  i+1);
-        clear_E_ID   (&((*Field)[i].E_ID )); if (show_tag) printf("Field %d E_ID   cleared.\n",  i+1);
-        clear_Emate  (&((*Field)[i].Emate)); if (show_tag) printf("Field %d Emate  cleared.\n",  i+1);
-        clear_mate   (&((*Field)[i].Mate )); if (show_tag) printf("Field %d Mate   cleared.\n",  i+1);
-        clear_result (&((*Field)[i].Res  )); if (show_tag) printf("Field %d result cleared.\n",  i+1);
+        clear_ID     (&(Field[i].ID   )); if (show_tag) printf("Field %d ID     cleared.\n",  i+1);
+        clear_init   (&(Field[i].Init )); if (show_tag) printf("Field %d Init   cleared.\n",  i+1);
+        clear_E_ID   (&(Field[i].E_ID )); if (show_tag) printf("Field %d E_ID   cleared.\n",  i+1);
+        clear_Emate  (&(Field[i].Emate)); if (show_tag) printf("Field %d Emate  cleared.\n",  i+1);
+        clear_mate   (&(Field[i].Mate )); if (show_tag) printf("Field %d Mate   cleared.\n",  i+1);
+        clear_result (&(Field[i].Res  )); if (show_tag) printf("Field %d result cleared.\n",  i+1);
     }
 }

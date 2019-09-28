@@ -25,15 +25,16 @@ void clear_field();
 int main(int argc, char* argv[])
 {
 
-    char data_file[]="./mesh/exam4.gid/exam4.dat";
-    char mate_file[]="./mate/exam4.mat";
-    char mesh_file[]="./mesh/exam4.gid/exam4.post.msh";
-    char resl_file[]="./mesh/exam4.gid/exam4.post.res";
+    char data_file[]="../mesh/exam2.gid/exam2.dat";
+    char mate_file[]="../mate/exam2.mat";
+    char mesh_file[]="../mesh/exam2.gid/exam2.post.msh";
+    char resl_file[]="../mesh/exam2.gid/exam2.post.res";
 
     Coor_Info Coor;
     Node_Mesh Mesh;
 
-    Field_info *Field = (Field_info*)malloc(5*sizeof(Field_info));
+    //Field_info *Field = (Field_info*)malloc(5*sizeof(Field_info));
+    Field_info Field[5];
 
     Equat_Set Equa;
 
@@ -68,5 +69,5 @@ int main(int argc, char* argv[])
 
     clear_coor( &Coor );
     clear_mesh( &Mesh );
-    clear_field( &Field, field_SN );
+    clear_field( Field, field_SN );
 }

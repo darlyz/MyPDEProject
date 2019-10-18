@@ -25,10 +25,10 @@ void clear_field();
 int main(int argc, char* argv[])
 {
 
-    char data_file[]="../mesh/exam2.gid/exam2.dat";
-    char mate_file[]="../mate/exam2.mat";
-    char mesh_file[]="../mesh/exam2.gid/exam2.post.msh";
-    char resl_file[]="../mesh/exam2.gid/exam2.post.res";
+    char data_file[]="../mesh/exam3.gid/exam3.dat";
+    char mate_file[]="../mate/exam3.mat";
+    char mesh_file[]="../mesh/exam3.gid/exam3.post.msh";
+    char resl_file[]="../mesh/exam3.gid/exam3.post.res";
 
     Coor_Info Coor;
     Node_Mesh Mesh;

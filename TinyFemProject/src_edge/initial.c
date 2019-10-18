@@ -10,8 +10,11 @@ void show_adj_();
 void show_node_eq_index();
 void show_non_trivial();
 void show_mesh_mate();
-void mesh2graph();
-void get_edge_info();
+void Mesh2Graph();
+void GraphContraction();
+void EdgeCensus();
+void NodeMesh2Edge();
+void show_edge_topo();
 
 void initial(
     Coor_Info   Coor,
@@ -82,18 +85,21 @@ void initial(
     for (int i=0; i<Coor.nodeN; i++)
         adj_topo[i] = (int*)malloc(init_adj_num*sizeof(int));
 
-    mesh2graph(adj_nodn, adj_topo, Mesh);
+    Mesh2Graph(adj_nodn, adj_topo, Mesh);
 
     //show_adj(adj_nodn, adj_topo, Coor.nodeN);
 
     // -------------------------------------- complete edges information ----------------------------------
-    graph_contraction (adj_nodn, adj_topo, &(Edges->adj_nodn),  &(Edges->adj_topo), total_nodes);
-    edge_census(Edges->adj_nodn, Edges->adj_topo, &(Edges->nodes), &(Edges->edgeN), total_nodes);
+    GraphContraction (adj_nodn, adj_topo, &(Edges->adj_nodn),  &(Edges->adj_topo), Coor.nodeN);
+    
+    EdgeCensus(Edges->adj_nodn, Edges->adj_topo, &(Edges->nodes), &(Edges->edgeN), Coor.nodeN);
 
-    //show_adj_(Edges->adj_nodn, Edges->adj_topo, Coor.nodeN);
+    show_adj_(Edges->adj_nodn, Edges->adj_topo, Coor.nodeN);
     //printf("---------%d %d\n",Edges->nodes[(Edges->edgeN-1)*2 + 0],Edges->nodes[(Edges->edgeN-1)*2 + 1]);
 
-    
+    NodeMesh2Edge(Mesh, EMesh, *Edges);
+
+    show_edge_topo(*EMesh);
 
     // --------------------------------------- initial Equation Set ---------------------------------------
     //int constraint_count = 0;

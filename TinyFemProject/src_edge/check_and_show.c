@@ -185,6 +185,12 @@ void show_mesh_mate(Mesh_Mate Emate) {
     }
 }
 
+void show_edges(Edge_Info Edge) {
+    for (int i = 0; i<Edge.edgeN; i++) {
+        printf("%d\t%d\n",Edge.nodes[i*2+0],Edge.nodes[i*2+1]);
+    }
+}
+
 void show_edge_topo(Edge_Mesh EMesh) {
     for (int type_i = 0; type_i < EMesh.typeN; type_i++) {
 
@@ -193,9 +199,9 @@ void show_edge_topo(Edge_Mesh EMesh) {
 
         for (int elem_i=0; elem_i<mesh_scale; elem_i++) {
 
-            //for (int edge_i=0; edge_i<elem_edgeN; edge_i++) {
-            //    printf( "%d ", EMesh.drict[type_i][elem_i*elem_edgeN + edge_i]);
-            //}
+            for (int edge_i=0; edge_i<elem_edgeN; edge_i++) {
+                printf( "%d ", EMesh.drict[type_i][elem_i*elem_edgeN + edge_i]);
+            }
             printf("\n");
             for (int edge_i=0; edge_i<elem_edgeN; edge_i++) {
                 printf( "%d ", EMesh.topo [type_i][elem_i*elem_edgeN + edge_i]);

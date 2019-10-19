@@ -10,11 +10,13 @@ void show_adj_();
 void show_node_eq_index();
 void show_non_trivial();
 void show_mesh_mate();
-void Mesh2Graph();
+void Mesh2Graph_Neighbour();
+void Mesh2Graph_Connected();
 void GraphContraction();
 void EdgeCensus();
 void NodeMesh2Edge();
 void show_edge_topo();
+void show_edges();
 
 void initial(
     Coor_Info   Coor,
@@ -85,21 +87,40 @@ void initial(
     for (int i=0; i<Coor.nodeN; i++)
         adj_topo[i] = (int*)malloc(init_adj_num*sizeof(int));
 
-    Mesh2Graph(adj_nodn, adj_topo, Mesh);
+    Mesh2Graph_Neighbour(adj_nodn, adj_topo, Mesh);
 
     //show_adj(adj_nodn, adj_topo, Coor.nodeN);
 
     // -------------------------------------- complete edges information ----------------------------------
-    GraphContraction (adj_nodn, adj_topo, &(Edges->adj_nodn),  &(Edges->adj_topo), Coor.nodeN);
     
+    int  *edge_adj_nodn;
+    int **edge_adj_topo;
+
+    edge_adj_nodn = (int* )calloc(Coor.nodeN,sizeof(int));
+    edge_adj_topo = (int**)malloc(Coor.nodeN*sizeof(int*));
+    
+    for (int i=0; i<Coor.nodeN; i++)
+        edge_adj_topo[i] = (int*)malloc(init_adj_num*sizeof(int));
+
+    Mesh2Graph_Connected(edge_adj_nodn, edge_adj_topo, Mesh);
+
+    //show_adj(edge_adj_nodn, edge_adj_topo, Coor.nodeN);
+    
+    GraphContraction (edge_adj_nodn, edge_adj_topo, &(Edges->adj_nodn),  &(Edges->adj_topo), Coor.nodeN);
+    
+    //show_adj_(Edges->adj_nodn, Edges->adj_topo, Coor.nodeN);
+
     EdgeCensus(Edges->adj_nodn, Edges->adj_topo, &(Edges->nodes), &(Edges->edgeN), Coor.nodeN);
 
-    show_adj_(Edges->adj_nodn, Edges->adj_topo, Coor.nodeN);
+    //show_edges(*Edges);
+
     //printf("---------%d %d\n",Edges->nodes[(Edges->edgeN-1)*2 + 0],Edges->nodes[(Edges->edgeN-1)*2 + 1]);
 
     NodeMesh2Edge(Mesh, EMesh, *Edges);
 
-    show_edge_topo(*EMesh);
+    //show_edge_topo(*EMesh);
+
+    free_adj(Coor.nodeN, edge_adj_nodn, edge_adj_topo);
 
     // --------------------------------------- initial Equation Set ---------------------------------------
     //int constraint_count = 0;
@@ -152,7 +173,7 @@ void initial(
 
     // --------------------------------------- convert graph to matrix ---------------------------------------
     Equa->nZeroN = 0;
-    for (int i=0; i<Coor.nodeN; i++)
+    for (int i=0; i<Coor.nodeN; i++) {
 
         for (int j=0; j<node_dof; j++) {
 
@@ -192,7 +213,7 @@ void initial(
             Equa->row_nZN[row_index-1] = non_trivial;
             Equa->nZeroN += non_trivial;
         }
-
+    }
 
     for (int i=0; i<Equa->equaN; i++)
         int_qsort(Equa->clm_idx[i], Equa->row_nZN[i]);

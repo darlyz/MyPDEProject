@@ -25,10 +25,24 @@ void clear_field();
 int main(int argc, char* argv[])
 {
 
-    char data_file[]="../mesh/exam3.gid/exam3.dat";
-    char mate_file[]="../mate/exam3.mat";
-    char mesh_file[]="../mesh/exam3.gid/exam3.post.msh";
-    char resl_file[]="../mesh/exam3.gid/exam3.post.res";
+    char proj_name[255];
+    strcpy(proj_name,argv[1]);
+
+    char data_file[255];
+    char mate_file[255];
+    char mesh_file[255];
+    char resl_file[255];
+
+    strcpy(data_file,"../mesh/"); strcat(data_file,proj_name); strcat(data_file,".gid/"); strcat(data_file,proj_name); strcat(data_file,".dat");
+    strcpy(mate_file,"../mate/"); strcat(mate_file,proj_name); strcat(mate_file,".mat");
+    strcpy(mesh_file,"../mesh/"); strcat(mesh_file,proj_name); strcat(mesh_file,".gid/"); strcat(mesh_file,proj_name); strcat(mesh_file,".post.msh");
+    strcpy(resl_file,"../mesh/"); strcat(resl_file,proj_name); strcat(resl_file,".gid/"); strcat(resl_file,proj_name); strcat(resl_file,".post.res");
+
+    //printf("%s\n",resl_file);
+    //char data_file[]="../mesh/exam3.gid/exam3.dat";
+    //char mate_file[]="../mate/exam3.mat";
+    //char mesh_file[]="../mesh/exam3.gid/exam3.post.msh";
+    //char resl_file[]="../mesh/exam3.gid/exam3.post.res";
 
     Coor_Info Coor;
     Node_Mesh Mesh;

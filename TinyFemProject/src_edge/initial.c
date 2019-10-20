@@ -32,6 +32,9 @@ void initial(
     Elem_Tag  *E_ID  = &(Field->E_ID);
     Mesh_Mate *Emate = &(Field->Emate);
 
+    Mesh.typeN --; // !!!!!!! temporary tackled
+
+    /*
     // ---------------------------------------- initial solution space ----------------------------------------
     Field->Res.result = (double *)calloc(Coor.nodeN*node_dof, sizeof(double));
     
@@ -47,7 +50,7 @@ void initial(
 
                 result[node_SN*ID->dofN + j] = ID->dofval[i*ID->dofN + j];
     }
-
+    */
     // ---------------------------------------- initial material space ---------------------------------------
     Emate->typeN = Mesh.typeN;
 
@@ -76,21 +79,7 @@ void initial(
         }
     }
     //show_mesh_mate(*Emate);
-
-    // ---------------------------------------- convert mesh to graph ------------------------------------
-    int  *adj_nodn;
-    int **adj_topo;
-
-    adj_nodn = (int* )calloc(Coor.nodeN,sizeof(int));
-    adj_topo = (int**)malloc(Coor.nodeN*sizeof(int*));
     
-    for (int i=0; i<Coor.nodeN; i++)
-        adj_topo[i] = (int*)malloc(init_adj_num*sizeof(int));
-
-    Mesh2Graph_Neighbour(adj_nodn, adj_topo, Mesh);
-
-    //show_adj(adj_nodn, adj_topo, Coor.nodeN);
-
     // -------------------------------------- complete edges information ----------------------------------
     
     int  *edge_adj_nodn;
@@ -121,6 +110,20 @@ void initial(
     //show_edge_topo(*EMesh);
 
     free_adj(Coor.nodeN, edge_adj_nodn, edge_adj_topo);
+
+    // ---------------------------------------- convert mesh to graph ------------------------------------
+    int  *adj_nodn;
+    int **adj_topo;
+
+    adj_nodn = (int* )calloc(Edges->edgeN,sizeof(int));
+    adj_topo = (int**)malloc(Edges->edgeN*sizeof(int*));
+    
+    for (int i=0; i<Coor.nodeN; i++)
+        adj_topo[i] = (int*)malloc(init_adj_num*sizeof(int));
+
+    Mesh2Graph_Neighbour(adj_nodn, adj_topo, *EMesh);
+
+    show_adj(adj_nodn, adj_topo, Edges->edgeN);
 
     // --------------------------------------- initial Equation Set ---------------------------------------
     //int constraint_count = 0;

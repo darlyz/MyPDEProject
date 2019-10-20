@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     Field_A->Res.dofN  = 1;
 
     initial ( Coor, Mesh, &Edges, &EMesh, Field_A, &Equa );
-
+return 1;
     //for (int i=0; i<Coor.nodeN; i++) printf("%le\n",Field_A->Res.result[i]);
     //for (int i=0; i<field_SN; i++) show_mesh_mate(Field[i].Emate);
     
